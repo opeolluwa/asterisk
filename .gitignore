@@ -43,6 +43,6 @@ typegen
 .env copy
 .env copy 1
 
-docs/openapi.json
+
 scripts/sql/products.sql
 ngrok.yaml

@@ -3,7 +3,6 @@
   "version": "1.0.0",
   "description": "",
   "main": "countries.js",
-
   "scripts": {
     "export:bindings": "node ts-export.js",
     "email:preview": "node email-preview.mjs",
@@ -14,6 +13,7 @@
   "license": "ISC",
   "type": "module",
   "dependencies": {
+    "@openapitools/openapi-generator-cli": "^2.41.0",
     "nunjucks": "^3.2.4",
     "ulid": "^3.0.2"
   }
