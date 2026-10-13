@@ -1,0 +1,40 @@
+{% extends "base.html" %}
+
+{% block title %}Re: {{ complaint_subject }}{% endblock %}
+
+{% block preheader %}We've replied to your complaint — {{ complaint_subject }}.{% endblock %}
+
+{% block greeting %}Hi {{ customer_name }},{% endblock %}
+
+{% block content %}
+  <p style="margin: 0 0 16px; color: #4a5560;">
+    Thank you for reaching out. Here's our response to your complaint
+    <strong style="color: #0d1220;">{{ complaint_subject }}</strong>.
+  </p>
+
+  {# body_html is sanitized by the caller via
+     services::mailer::sanitize::clean_reply_html. This is the only place in the
+     crate that interpolates untrusted markup with | safe, so the sanitize call
+     on the dispatch path is load-bearing — do not render raw input here. #}
+  <div
+    style="
+      margin: 24px 0;
+      padding: 20px;
+      border: 1px solid #e3e9e6;
+      border-radius: 8px;
+      font-family: 'Lato', Arial, sans-serif;
+      font-size: 15px;
+      line-height: 1.6;
+      color: #0d1220;
+      word-break: break-word;
+      overflow-wrap: break-word;
+    "
+  >
+    {{ body_html|safe }}
+  </div>
+
+  <p style="margin: 0 0 28px; color: #8a9490; font-size: 13px;">
+    If this doesn't resolve your issue, reply to this email and we'll continue
+    from here.
+  </p>
+{% endblock %}

@@ -1,0 +1,29 @@
+[package]
+name = "generator"
+version = "0.1.0"
+edition = "2024"
+
+[lib]
+name = "generator_lib"
+path = "src/lib.rs"
+
+[[bin]]
+name = "cli"
+path = "src/main.rs"
+
+[dependencies]
+clap = { version = "4.5", features = ["derive"] }
+console = "0.15"
+convert_case = "0.8"
+dialoguer = "0.11"
+thiserror = "2.0.18"
+
+
+[profile.release]
+opt-level = 3
+codegen-units = 1
+lto = "thin"
+panic = "abort"
+strip = "symbols"
+debug = false
+incremental = false

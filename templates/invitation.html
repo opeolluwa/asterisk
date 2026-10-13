@@ -1,0 +1,193 @@
+{% extends "base.html" %}
+
+{% block title %}You're invited to asterisk{% endblock %}
+
+{% block preheader %}
+  {% if inviter_name != "" %}
+    {{ inviter_name }} invited you to join the asterisk team.
+  {% else %}
+    You've been invited to join the asterisk team.
+  {% endif %}
+{% endblock %}
+
+{% block greeting %}
+  {% if invitee_name != "" %}
+    Hi {{ invitee_name }},
+  {% else %}
+    Hi there,
+  {% endif %}
+{% endblock %}
+
+{% block content %}
+  <p style="margin: 0 0 16px; color: #4a5560;">
+    {% if inviter_name != "" %}
+      <strong style="color: #0d1220;">{{ inviter_name }}</strong> has invited you
+      to join the team on asterisk. You'll be joining a workspace your
+      team is already using, so there's nothing to set up from scratch.
+    {% else %}
+      You've been invited to join the team on asterisk. You'll be
+      joining a workspace your team is already using, so there's nothing to set
+      up from scratch.
+    {% endif %}
+  </p>
+
+  {% if role_name != "" %}
+    <p style="margin: 0 0 24px; color: #4a5560;">
+      Your access is set to
+      <strong style="color: #0d1220;">{{ role_name }}</strong>.
+      Your administrator can change this after you join.
+    </p>
+  {% else %}
+    <p style="margin: 0 0 24px; color: #4a5560;">
+      Your administrator will confirm what you have access to once you join.
+    </p>
+  {% endif %}
+
+  <table
+    border="0"
+    cellpadding="0"
+    cellspacing="0"
+    role="presentation"
+    width="100%"
+    style="
+      margin: 0 0 28px;
+      border: 1px solid #e3e9e6;
+      border-radius: 8px;
+      background-color: #fbfcfc;
+    "
+  >
+    <tbody>
+      <tr>
+        <td style="padding: 20px 20px 16px;">
+          <p
+            style="
+              margin: 0 0 12px;
+              font-family: 'Lato', Arial, sans-serif;
+              font-size: 12px;
+              font-weight: 600;
+              letter-spacing: 0.6px;
+              text-transform: uppercase;
+              color: #8a9490;
+            "
+          >
+            What happens next
+          </p>
+
+          <table
+            border="0"
+            cellpadding="0"
+            cellspacing="0"
+            role="presentation"
+            width="100%"
+          >
+            <tbody>
+              <tr>
+                <td
+                  valign="top"
+                  width="28"
+                  style="
+                    padding: 4px 0;
+                    font-family: 'Lato', Arial, sans-serif;
+                    font-size: 13px;
+                    font-weight: 700;
+                    color: #00b87a;
+                  "
+                >
+                  1.
+                </td>
+
+                <td
+                  style="
+                    padding: 4px 0;
+                    color: #4a5560;
+                    font-size: 14px;
+                    line-height: 22px;
+                  "
+                >
+                  Open the link below. Your name and email are already filled in.
+                </td>
+              </tr>
+
+              <tr>
+                <td
+                  valign="top"
+                  width="28"
+                  style="
+                    padding: 4px 0;
+                    font-family: 'Lato', Arial, sans-serif;
+                    font-size: 13px;
+                    font-weight: 700;
+                    color: #00b87a;
+                  "
+                >
+                  2.
+                </td>
+
+                <td
+                  style="
+                    padding: 4px 0;
+                    color: #4a5560;
+                    font-size: 14px;
+                    line-height: 22px;
+                  "
+                >
+                  Choose a password. Nothing is created until you do this.
+                </td>
+              </tr>
+
+              <tr>
+                <td
+                  valign="top"
+                  width="28"
+                  style="
+                    padding: 4px 0;
+                    font-family: 'Lato', Arial, sans-serif;
+                    font-size: 13px;
+                    font-weight: 700;
+                    color: #00b87a;
+                  "
+                >
+                  3.
+                </td>
+
+                <td
+                  style="
+                    padding: 4px 0;
+                    color: #4a5560;
+                    font-size: 14px;
+                    line-height: 22px;
+                  "
+                >
+                  You're signed in and landed on your dashboard, ready to go.
+                </td>
+              </tr>
+            </tbody>
+          </table>
+        </td>
+      </tr>
+    </tbody>
+  </table>
+
+  {{ cta(href=signup_link, label="Set up your account") }}
+
+  {% if expires_on != "" %}
+    <p style="margin: 24px 0 8px; color: #8a9490; font-size: 13px;">
+      This invitation expires on {{ expires_on }}. After that you'll need to ask
+      your administrator to send you a new one.
+    </p>
+  {% else %}
+    <p style="margin: 24px 0 8px; color: #8a9490; font-size: 13px;">
+      This invitation expires after 7 days. After that you'll need to ask your
+      administrator to send you a new one.
+    </p>
+  {% endif %}
+
+  {{ raw_link(href=signup_link) }}
+
+  <p style="margin: 24px 0 0; color: #8a9490; font-size: 13px;">
+    Didn't expect this invitation? You can safely ignore this email. No account
+    is created unless you complete the form above, and your administrator can
+    revoke the invite at any time. Questions? Reply to this email or write to
+    support@asterisk.app.
+  </p>
+{% endblock %}

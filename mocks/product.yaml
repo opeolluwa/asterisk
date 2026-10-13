@@ -1,0 +1,25 @@
+description: ImageKit file upload
+request:
+  method: POST
+  path: "/api/v1/files/upload"
+  headers:
+    Authorization:
+      - "Basic *"
+response:
+  statusCode: 200
+  headers:
+    Content-Type:
+      - "application/json"
+  body: >-
+    {
+      "fileId": "67f1a2b3c4d5e6f701234567",
+      "name": "product-image.jpg",
+      "size": 24576,
+      "versionInfo": { "id": "67f1a2b3c4d5e6f701234568", "name": "Version 1" },
+      "filePath": "/products/product-image.jpg",
+      "url": "https://ik.imagekit.io/demo/products/product-image.jpg",
+      "fileType": "image",
+      "thumbnailUrl": "https://ik.imagekit.io/demo/tr:n-ik_ml_thumbnail/products/product-image.jpg",
+      "aiTags": null,
+      "description": null
+    }

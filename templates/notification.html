@@ -1,0 +1,35 @@
+{% extends "base.html" %}
+
+{% block title %}{{ title }}{% endblock %}
+
+{% block preheader %}{{ title }}{% endblock %}
+
+{% block greeting %}Hi {{ name }},{% endblock %}
+
+{% block content %}
+  <p
+    style="
+      margin: 0 0 16px;
+      color: #4a5560;
+      font-family: 'Lato', Arial, sans-serif;
+      font-size: 15px;
+      line-height: 1.6;
+      word-break: break-word;
+      overflow-wrap: break-word;
+    "
+  >
+    {{ body }}
+  </p>
+  <p
+    style="
+      margin: 24px 0 0;
+      color: #8a9490;
+      font-family: 'Lato', Arial, sans-serif;
+      font-size: 12px;
+      line-height: 1.6;
+    "
+  >
+    You are receiving this because of your notification preferences. You can
+    manage these from your settings on the dashboard.
+  </p>
+{% endblock %}

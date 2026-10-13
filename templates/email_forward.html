@@ -1,0 +1,103 @@
+{% extends "base.html" %}
+
+{% block title %}New message from {{ sender_email }}{% endblock %}
+
+{% block preheader %}{{ subject }}{% endblock %}
+
+{# No greeting: nobody is being addressed personally here, and the default
+   "Hi there," would read as though the recipient had been picked out of a
+   mailing list. #}
+{% block greeting %}Someone sent you a message through the website:{% endblock %}
+
+{% block content %}
+  <table
+    role="presentation"
+    width="100%"
+    cellpadding="0"
+    cellspacing="0"
+    style="margin: 0 0 24px; border-collapse: collapse;"
+  >
+    <tr>
+      <td
+        style="
+          padding: 20px;
+          border: 1px solid #e3e9e6;
+          border-radius: 8px;
+          font-family: 'Lato', Arial, sans-serif;
+          font-size: 14px;
+          line-height: 1.6;
+          color: #0d1220;
+          vertical-align: top;
+        "
+      >
+        <table role="presentation" cellpadding="0" cellspacing="0" style="border-collapse: collapse;">
+          <tr>
+            <td style="padding: 0 16px 8px 0; color: #8a9490; white-space: nowrap;">From</td>
+            <td style="padding: 0 0 8px; color: #0d1220; word-break: break-word; overflow-wrap: break-word;">{{ sender_name }} &lt;{{ sender_email }}&gt;</td>
+          </tr>
+          {# Only rendered when the visitor gave a number to call back on. The emptiness
+             test is a comparison rather than a bare `{% if phone %}` because
+             askama 0.15 will not accept a `&str` in a truthiness position, and
+             `scripts/email-preview.mjs` renders this same file through nunjucks,
+             which has no `is_empty`. Both engines accept `!= ""`. #}
+          {% if phone != "" %}
+          <tr>
+            <td style="padding: 0 16px 8px 0; color: #8a9490; white-space: nowrap;">Phone</td>
+            <td style="padding: 0 0 8px; color: #0d1220; word-break: break-word; overflow-wrap: break-word;">{{ phone }}</td>
+          </tr>
+          {% endif %}
+          <tr>
+            <td style="padding: 0 16px 8px 0; color: #8a9490; white-space: nowrap;">Subject</td>
+            <td style="padding: 0 0 8px; color: #0d1220; word-break: break-word; overflow-wrap: break-word;">{{ subject }}</td>
+          </tr>
+          {# Only rendered when the submitted address differs from the one
+             attributed above, which is how a mismatch between the two shows up
+             without having to read the whole message. #}
+          {% if recipient_email != sender_email %}
+          <tr>
+            <td style="padding: 0 16px 8px 0; color: #8a9490; white-space: nowrap;">Sent to</td>
+            <td style="padding: 0 0 8px; color: #0d1220; word-break: break-word; overflow-wrap: break-word;">{{ recipient_email }}</td>
+          </tr>
+          {% endif %}
+        </table>
+      </td>
+    </tr>
+  </table>
+
+  {# Every field above and below is escaped by askama and none is marked
+     | safe. That is deliberate and is the opposite of complaint_reply.html:
+     this message arrives from an unauthenticated public endpoint, so the sender
+     name, addresses, subject and body are all attacker-controlled. Rendering
+     any of them as markup would put script into this inbox. Do not add
+     | safe here. #}
+  <div
+    style="
+      margin: 0 0 28px;
+      padding: 20px;
+      border-left: 3px solid #00b87a;
+      background: #f7f9f8;
+      border-radius: 0 8px 8px 0;
+      font-family: 'Lato', Arial, sans-serif;
+      font-size: 15px;
+      line-height: 1.6;
+      color: #0d1220;
+      white-space: pre-wrap;
+      word-break: break-word;
+    "
+  >{{ body }}
+  </div>
+
+  <p
+    style="
+      margin: 0;
+      color: #8a9490;
+      font-family: 'Lato', Arial, sans-serif;
+      font-size: 12px;
+      line-height: 1.6;
+    "
+  >
+    Reply directly to this email to answer {{ sender_name }}. The address above is
+    supplied by whoever filled in the form, so treat it as unverified until you
+    have confirmed the sender some other way.
+  </p>
+{% endblock %}

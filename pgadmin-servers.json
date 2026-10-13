@@ -1,0 +1,15 @@
+{
+  "Servers": {
+    "1": {
+      "Name": "Dev Postgres (auto) DB",
+      "Group": "Servers",
+      "Host": "database",
+      "Port": 5432,
+      "MaintenanceDB": "asterisk",
+      "Username": "asterisk",
+      "Password": "asterisk",
+      "SSLMode": "prefer",
+      "SavePassword": true
+    }
+  }
+}

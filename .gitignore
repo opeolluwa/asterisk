@@ -1,0 +1,48 @@
+# macOS
+.DS_Store
+**/.DS_Store
+
+# Rust
+target/
+**/*.rs.bk
+
+# Node.js
+node_modules/
+*.tsbuildinfo
+.npm
+.eslintcache
+
+# Frontend build outputs
+dist/
+.next/
+.nuxt/
+.output/
+out/
+
+# Environment files
+.env
+.env.*
+!.env.example
+!.env.test.example
+!.env.staging.example
+# Logs
+*.log
+logs/
+
+# Temp
+tmp/
+
+docs.sh
+email.sh
+paystack.sh
+
+console
+
+bindings
+typegen
+.env copy
+.env copy 1
+
+docs/openapi.json
+scripts/sql/products.sql
+ngrok.yaml

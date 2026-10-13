@@ -1,0 +1,81 @@
+{% extends "base.html" %}
+
+{% block title %}Payment Confirmed{% endblock %}
+
+{% block preheader %}Your payment of {{ amount }} has been confirmed — reference {{ reference }}.{% endblock %}
+
+{% block greeting %}Hi {{ name }},{% endblock %}
+
+{% block content %}
+  <p style="margin: 0 0 16px; color: #4a5560;">
+    Your payment has been confirmed. Here are the details.
+  </p>
+  <table
+    border="0"
+    cellpadding="0"
+    cellspacing="0"
+    role="presentation"
+    width="100%"
+    style="margin: 24px 0; border: 1px solid #e3e9e6; border-radius: 8px;"
+  >
+    <tbody>
+      <tr>
+        <td style="padding: 20px;">
+          <table border="0" cellpadding="0" cellspacing="0" role="presentation" width="100%">
+            <tbody>
+              <tr>
+                <td
+                  style="
+                    padding: 4px 0;
+                    font-family: 'Lato', Arial, sans-serif;
+                    font-size: 12px;
+                    color: #8a9490;
+                  "
+                >Amount</td>
+                <td
+                  align="right"
+                  style="
+                    padding: 4px 0;
+                    font-family: 'Lato', Arial, sans-serif;
+                    font-size: 15px;
+                    font-weight: 600;
+                    color: #0d1220;
+                    word-break: break-word;
+                    overflow-wrap: break-word;
+                  "
+                >{{ amount }}</td>
+              </tr>
+              <tr>
+                <td
+                  style="
+                    padding: 4px 0;
+                    font-family: 'Lato', Arial, sans-serif;
+                    font-size: 12px;
+                    color: #8a9490;
+                  "
+                >Reference</td>
+                <td
+                  align="right"
+                  style="
+                    padding: 4px 0;
+                    font-family: 'Lato', Arial, sans-serif;
+                    font-size: 15px;
+                    color: #0d1220;
+                    word-break: break-word;
+                    overflow-wrap: break-word;
+                  "
+                >{{ reference }}</td>
+              </tr>
+            </tbody>
+          </table>
+        </td>
+      </tr>
+    </tbody>
+  </table>
+  {{ cta(href=dashboard_link, label="View receipt") }}
+
+  <p style="margin: 28px 0 0; color: #8a9490; font-size: 13px;">
+    If anything looks incorrect, contact us at
+    <a href="mailto:support@asterisk.app" style="color: #00b87a; text-decoration: none; font-weight: 600;">support@asterisk.app</a>.
+  </p>
+{% endblock %}

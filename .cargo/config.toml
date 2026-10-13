@@ -1,0 +1,4 @@
+[env]
+# this project and the vue project lives in the same root 
+TS_RS_EXPORT_DIR = { value = "typegen", relative = true }
+TS_RS_LARGE_INT = "number"

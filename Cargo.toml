@@ -1,0 +1,91 @@
+[package]
+name = "asterisk"
+version = "0.6.2"
+authors = ["Adefemi Adeoye"]
+description = "Content management system and administrative platform for web applications"
+edition = "2024"
+default-run = "asterisk"
+
+[lib]
+name = "lib_asterisk"
+path = "src/lib.rs"
+
+[[bin]]
+name = "asterisk"
+path = "src/bin/asterisk.rs"
+
+[[bin]]
+name = "asterisk-cli"
+path = "src/bin/cli.rs"
+
+[dependencies]
+ammonia = "4.1"
+askama = "0.15.6"
+axum = { version = "0.8.3", features = ["macros"] }
+axum-extra = { version = "0.12.1", features = ["typed-header"] }
+axum-governor = "2.1.2"
+axum_typed_multipart = { version = "0.16.3", features = ["tempfile_3"] }
+base64 = "0.22"
+bcrypt = "0.17.0"
+bullmq-official = "1.1.0"
+chrono = { version = "0.4.41", features = ["serde"] }
+clap = { version = "4.5.51", features = ["derive"] }
+console = "0.16.1"
+dialoguer = "0.12.0"
+heck = "0.5.0"
+hex = "0.4"
+hmac = "0.12"
+jsonwebtoken = { version = "10.1.0", features = ["rust_crypto"] }
+lettre = { version = "0.11.22", default-features = false, features = ["smtp-transport", "pool", "builder", "hostname", "tokio1-rustls", "ring", "rustls", "rustls-native-certs"] }
+log = "0.4.27"
+macros = { version = "0.1.0", path = "macros" }
+migration = { version = "0.1.0", path = "migration" }
+rand = "0.10.3"
+redis = { version = "1.4.1", features = ["tokio-comp", "aio", "connection-manager"] }
+reqwest = { version = "0.12", features = ["json", "multipart"] }
+rust_decimal = { version = "1.39.0", features = ["macros", "serde"] }
+sanitizer = { version = "1.0.0", features = ["derive"] }
+sea-orm = { version = "2.0.2", features = ["runtime-tokio-rustls", "sqlx-postgres", "sqlx-sqlite", "macros", "debug-print", "with-time", "with-rust_decimal", "with-uuid"] }
+sea-orm-migration = { version = "2.0.2", features = ["runtime-tokio-rustls", "sqlx-postgres"] }
+secrecy = { version = "0.10.3", features = ["serde"] }
+serde = { version = "1.0.219", features = ["derive"] }
+serde_json = { version = "1.0.140", features = ["raw_value"] }
+serde_with = "3.16.0"
+sha2 = "0.10"
+tempfile = "3.23.0"
+thiserror = "2.0.12"
+tokio = { version = "1.44.2", features = ["full", "macros"] }
+tower = { version = "0.5.2", features = ["limit", "timeout"] }
+tower-http = { version = "0.6.6", features = ["limit", "fs", "trace", "cors", "timeout", "sensitive-headers", "request-id"] }
+tracing = "0.1"
+tracing-subscriber = { version = "0.3", features = ["env-filter"] }
+ts-rs = { version = "11.1.0", features = [
+    "uuid-impl",
+    "chrono-impl",
+    "format",
+    "serde-json-impl",
+    "bigdecimal-impl",
+] }
+typed-builder = "0.23.2"
+ulid = { version = "1.2.1", features = ["serde"] }
+url = "2.5"
+uuid = { version = "1.24.0", features = ["v4"] }
+validator = { version = "0.20.0", features = ["derive"] }
+
+[dev-dependencies]
+axum-test = "18.2.1"
+futures-util = { version = "0.3", features = ["std"] }
+mockall = "0.13"
+sea-orm = { version = "2.0.2", features = ["sqlx-sqlite"] }
+secrecy = { version = "0.10.3", features = ["serde"] }
+serde_json = "1.0.140"
+tokio = { version = "1.44.2", features = ["full", "macros"] }
+
+[profile.release]
+opt-level = 3
+codegen-units = 1
+lto = "fat"
+panic = "abort"
+strip = "symbols"
+debug = false
+incremental = false

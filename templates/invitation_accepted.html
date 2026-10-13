@@ -1,0 +1,13 @@
+{% extends "base.html" %}
+
+{% block title %}Invitation Accepted{% endblock %}
+
+{% block preheader %}A new team member has accepted their invitation.{% endblock %}
+
+{% block content %}
+  <p style="margin: 0 0 28px; color: #4a5560;">
+    A new member has accepted their invitation and joined your team. Head to
+    your dashboard to see the updated roster.
+  </p>
+  {{ cta(href=dashboard_link, label="Go to dashboard") }}
+  {% endblock %}

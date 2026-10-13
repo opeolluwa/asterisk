@@ -1,0 +1,14 @@
+target/
+**/target/
+.env
+.env.*
+tmp/
+**/node_modules/
+**/.DS_Store
+**/.git/
+bindings/
+console/
+generator/
+mocks/
+docs/
+pgadmin-servers.json

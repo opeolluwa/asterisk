@@ -1,0 +1,22 @@
+{% extends "base.html" %}
+
+{% block title %}We received your message{% endblock %}
+
+{% block preheader %}Thanks for reaching out — we'll get back to you within 1–2 business days.{% endblock %}
+
+{% block greeting %}Hi {{ name }},{% endblock %}
+
+{% block content %}
+  <p style="margin: 0 0 16px; color: #4a5560;">
+    We've received your message and our team will get back to you as soon as
+    possible.
+  </p>
+  <p style="margin: 0 0 28px; color: #4a5560;">
+    We typically respond within 1–2 business days.
+  </p>
+  <p style="margin: 0; color: #8a9490; font-size: 13px;">
+    Please do not reply to this email — it was sent automatically. If you need
+    to follow up, write to
+    <a href="mailto:support@asterisk.app" style="color: #00b87a; text-decoration: none; font-weight: 600;">support@asterisk.app</a>.
+  </p>
+{% endblock %}

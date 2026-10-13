@@ -1,0 +1,23 @@
+[package]
+name = "macros"
+version = "0.1.0"
+edition = "2024"
+
+[lib]
+proc-macro = true
+
+[dependencies]
+proc-macro2 = "1"
+quote = "1"
+sea-orm = "2.0.2"
+syn = { version = "2", features = ["full"] }
+
+
+[profile.release]
+opt-level = 3
+codegen-units = 1
+lto = "thin"
+panic = "abort"
+strip = "symbols"
+debug = false
+incremental = false

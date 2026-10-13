@@ -1,0 +1,20 @@
+{
+  "name": "scripts",
+  "version": "1.0.0",
+  "description": "",
+  "main": "countries.js",
+
+  "scripts": {
+    "export:bindings": "node ts-export.js",
+    "email:preview": "node email-preview.mjs",
+    "openapi:preview": "node openapi/preview.mjs"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "type": "module",
+  "dependencies": {
+    "nunjucks": "^3.2.4",
+    "ulid": "^3.0.2"
+  }
+}

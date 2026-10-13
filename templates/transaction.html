@@ -1,0 +1,140 @@
+{% extends "base.html" %}
+
+{% block title %}Transaction {{ transaction_reference }}{% endblock %}
+
+{% block preheader %}Transaction {{ transaction_reference }} — {{ total }} total.{% endblock %}
+
+{% block greeting %}Hi {{ name }},{% endblock %}
+
+{% block content %}
+  <p style="margin: 0 0 24px; color: #4a5560;">
+    Here's the breakdown for transaction
+    <strong style="color: #0d1220;">{{ transaction_reference }}</strong>.
+  </p>
+
+  <table
+    border="0"
+    cellpadding="0"
+    cellspacing="0"
+    role="presentation"
+    width="100%"
+    style="margin: 0 0 24px; border: 1px solid #eef2f0; border-radius: 8px;"
+  >
+    <tbody>
+      <tr>
+        <td
+          style="
+            padding: 12px 12px;
+            font-family: 'Lato', Arial, sans-serif;
+            font-size: 11px;
+            font-weight: 600;
+            letter-spacing: 0.5px;
+            text-transform: uppercase;
+            color: #8a9490;
+            background-color: #f7f9f8;
+            border-bottom: 1px solid #eef2f0;
+          "
+        >Item</td>
+        <td
+          align="right"
+          style="
+            padding: 12px 12px;
+            font-family: 'Lato', Arial, sans-serif;
+            font-size: 11px;
+            font-weight: 600;
+            letter-spacing: 0.5px;
+            text-transform: uppercase;
+            color: #8a9490;
+            background-color: #f7f9f8;
+            border-bottom: 1px solid #eef2f0;
+          "
+        >Qty</td>
+        <td
+          align="right"
+          style="
+            padding: 12px 12px;
+            font-family: 'Lato', Arial, sans-serif;
+            font-size: 11px;
+            font-weight: 600;
+            letter-spacing: 0.5px;
+            text-transform: uppercase;
+            color: #8a9490;
+            background-color: #f7f9f8;
+            border-bottom: 1px solid #eef2f0;
+          "
+        >Amount</td>
+      </tr>
+      {% for item in items %}
+      <tr>
+        <td
+          style="
+            padding: 12px 12px;
+            font-family: 'Lato', Arial, sans-serif;
+            font-size: 14px;
+            color: #0d1220;
+            border-bottom: 1px solid #eef2f0;
+            word-break: break-word;
+            overflow-wrap: break-word;
+          "
+        >{{ item.description }}</td>
+        <td
+          align="right"
+          style="
+            padding: 12px 12px;
+            font-family: 'Lato', Arial, sans-serif;
+            font-size: 14px;
+            color: #4a5560;
+            border-bottom: 1px solid #eef2f0;
+            white-space: nowrap;
+          "
+        >{{ item.quantity }}</td>
+        <td
+          align="right"
+          style="
+            padding: 12px 12px;
+            font-family: 'Lato', Arial, sans-serif;
+            font-size: 14px;
+            color: #4a5560;
+            border-bottom: 1px solid #eef2f0;
+            white-space: nowrap;
+          "
+        >{{ item.amount }}</td>
+      </tr>
+      {% endfor %}
+      <tr>
+        <td
+          colspan="2"
+          align="right"
+          style="
+            padding: 14px 12px;
+            font-family: 'Lato', Arial, sans-serif;
+            font-size: 14px;
+            font-weight: 700;
+            color: #0d1220;
+            border-top: 2px solid #e3e9e6;
+          "
+        >Total</td>
+        <td
+          align="right"
+          style="
+            padding: 14px 12px;
+            font-family: 'Lato', Arial, sans-serif;
+            font-size: 15px;
+            font-weight: 700;
+            color: #00b87a;
+            border-top: 2px solid #e3e9e6;
+            white-space: nowrap;
+          "
+        >{{ total }}</td>
+      </tr>
+    </tbody>
+  </table>
+
+  <p style="margin: 0; color: #8a9490; font-size: 13px;">
+    Keep this email for your records. If anything looks incorrect, contact us at
+    <a
+      href="mailto:support@asterisk.app"
+      style="color: #00b87a; text-decoration: none; font-weight: 600;"
+    >support@asterisk.app</a>.
+  </p>
+{% endblock %}

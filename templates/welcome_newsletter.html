@@ -1,0 +1,19 @@
+{% extends "base.html" %}
+
+{% block title %}Welcome to the Newsletter{% endblock %}
+
+{% block preheader %}You're on the list — product updates and tips are headed your way.{% endblock %}
+
+{% block greeting %}Hi {{ name }},{% endblock %}
+
+{% block content %}
+  <p style="margin: 0 0 16px; color: #4a5560;">
+    Thanks for subscribing. You're now on the list — expect product updates,
+    helpful tips, and exclusive offers in your inbox.
+  </p>
+  <p style="margin: 0 0 28px; color: #4a5560;">
+    Changed your mind? Just reply to this email and we'll take you off the list.
+    We're glad to have you along for the ride.
+  </p>
+  {{ cta(href=dashboard_link, label="Visit your dashboard") }}
+{% endblock %}

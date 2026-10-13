@@ -1,0 +1,13 @@
+pub mod auto_respond;
+pub mod complaint_reply;
+pub mod email_forward;
+pub mod invitation;
+pub mod invitation_accepted;
+pub mod notification;
+pub mod order_resolved;
+pub mod otp_code;
+pub mod password_reset;
+pub mod payment_confirmed;
+pub mod transaction;
+pub mod welcome;
+pub mod welcome_newsletter;
