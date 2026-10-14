@@ -6,7 +6,7 @@ use serde::{Deserialize, Serialize};
 #[derive(Clone, Debug, PartialEq, Eq, DeriveEntityModel, Serialize, Deserialize)]
 #[sea_orm(table_name = "app_config")]
 #[serde(rename_all = "camelCase")]
-#[macros::ts_rs_export_sea_orm_entity_name]
+#[asterisk_macros::ts_rs_export_sea_orm_entity_name]
 pub struct Model {
     #[sea_orm(column_type = "Text", nullable)]
     pub app_name: Option<String>,

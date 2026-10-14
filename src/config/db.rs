@@ -1,6 +1,6 @@
 use std::time::Duration;
 
-use migration::{Migrator, MigratorTrait};
+use asterisk_migration::{Migrator, MigratorTrait};
 use sea_orm::{ConnectOptions, DatabaseConnection};
 use secrecy::ExposeSecret;
 

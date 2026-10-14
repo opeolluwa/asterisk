@@ -1,0 +1,6 @@
+[package]
+name = "asterisk_storage"
+version.workspace = true
+edition = "2024"
+
+[dependencies]

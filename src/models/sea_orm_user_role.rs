@@ -6,7 +6,7 @@ use serde::{Deserialize, Serialize};
 #[derive(Clone, Debug, PartialEq, DeriveEntityModel, Eq, Serialize, Deserialize)]
 #[sea_orm(table_name = "sea_orm_user_role")]
 #[serde(rename_all = "camelCase")]
-#[macros::ts_rs_export_sea_orm_entity_name]
+#[asterisk_macros::ts_rs_export_sea_orm_entity_name]
 pub struct Model {
     #[sea_orm(primary_key)]
     pub user_id: i64,
