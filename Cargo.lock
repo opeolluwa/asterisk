@@ -379,7 +379,7 @@ dependencies = [
 
 [[package]]
 name = "asterisk"
-version = "0.6.2"
+version = "0.6.3"
 dependencies = [
  "ammonia",
  "askama",
@@ -435,7 +435,7 @@ dependencies = [
 
 [[package]]
 name = "asterisk_event_bus"
-version = "0.6.2"
+version = "0.6.3"
 dependencies = [
  "bullmq-official",
  "futures",
@@ -450,7 +450,7 @@ dependencies = [
 
 [[package]]
 name = "asterisk_generator"
-version = "0.6.2"
+version = "0.6.3"
 dependencies = [
  "clap",
  "console 0.15.11",
@@ -461,7 +461,7 @@ dependencies = [
 
 [[package]]
 name = "asterisk_macros"
-version = "0.6.2"
+version = "0.6.3"
 dependencies = [
  "proc-macro2",
  "quote",
@@ -471,7 +471,7 @@ dependencies = [
 
 [[package]]
 name = "asterisk_migration"
-version = "0.6.2"
+version = "0.6.3"
 dependencies = [
  "sea-orm",
  "sea-orm-migration",
@@ -481,11 +481,11 @@ dependencies = [
 
 [[package]]
 name = "asterisk_payment"
-version = "0.6.2"
+version = "0.6.3"
 
 [[package]]
 name = "asterisk_storage"
-version = "0.6.2"
+version = "0.6.3"
 
 [[package]]
 name = "async-lock"
