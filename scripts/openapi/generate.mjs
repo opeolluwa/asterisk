@@ -6,7 +6,7 @@
 // endpoints, the handler signatures in `src/handlers/*.rs` for request bodies and
 // response shapes, and the `derive` attributes on the structs in
 // `src/extractors`, `src/dto` and `src/models` to build component schemas. It
-// emits an OpenAPI 3.1 document and, with `--check`, diffs it against the
+// emits an OpenAPI 3.0.3 document and, with `--check`, diffs it against the
 // committed one.
 //
 // Usage:
@@ -866,6 +866,7 @@ function refFor(key) {
 
 function isNullable(schema) {
   if (!schema) return false;
+  if (schema.nullable === true) return true;
   if (Array.isArray(schema.type) && schema.type.includes('null')) return true;
   return (schema.anyOf || schema.oneOf || []).some((option) => option.type === 'null');
 }
@@ -874,12 +875,12 @@ function nullable(schema) {
   if (!schema || Object.keys(schema).length === 0) return schema;
   if (isNullable(schema)) return schema;
   if (schema.$ref || schema.allOf || schema.anyOf || schema.oneOf) {
-    return { anyOf: [schema, { type: 'null' }] };
+    return { allOf: [schema], nullable: true };
   }
   if (schema.type && typeof schema.type === 'string') {
-    return { ...schema, type: [schema.type, 'null'] };
+    return { ...schema, nullable: true };
   }
-  return { anyOf: [schema, { type: 'null' }] };
+  return { allOf: [schema], nullable: true };
 }
 
 function enumValues(entry) {
@@ -899,7 +900,7 @@ function schemaForType(type, fileInfo) {
     const items = splitTopLevel(t.slice(1, -1)).map((x) => schemaForType(x, fileInfo));
     return {
       type: 'array',
-      prefixItems: items,
+      items: items.length === 1 ? items[0] : {},
       minItems: items.length,
       maxItems: items.length,
     };
@@ -991,20 +992,28 @@ function componentSchema(entry) {
   if (entry.untagged) {
     const options = [];
     const seen = new Set();
+    let isOptional = false;
     for (const variant of entry.variants) {
       if (variant.skip) continue;
-      let option;
-      if (variant.payload) {
-        option = schemaForType(variant.payload, entry.fileInfo);
-      } else {
-        option = { type: 'null' };
+      if (!variant.payload) {
+        isOptional = true;
+        continue;
       }
+      const option = schemaForType(variant.payload, entry.fileInfo);
       const sig = JSON.stringify(option);
       if (seen.has(sig)) continue;
       seen.add(sig);
       options.push(option);
     }
-    const schema = { oneOf: options };
+    let schema;
+    if (options.length === 0) {
+      schema = { nullable: true };
+    } else if (options.length === 1) {
+      schema = isOptional ? nullable(options[0]) : options[0];
+    } else {
+      schema = { oneOf: options };
+      if (isOptional) schema.nullable = true;
+    }
     if (entry.description) schema.description = entry.description;
     return schema;
   }
@@ -1197,7 +1206,7 @@ function generate() {
       if (m) roots.add(m[1]);
     }
 
-    let operationId = `${ep.handler}_${mod}`;
+    let operationId = ep.handler;
     let candidate = operationId;
     let counter = 2;
     while (operationIds.has(candidate)) {
@@ -1349,7 +1358,7 @@ function generate() {
   for (const ep of endpoints) if (!tagOrder.includes(ep.tag)) tagOrder.push(ep.tag);
 
   const document = {
-    openapi: '3.1.0',
+    openapi: '3.0.3',
     info: {
       title: 'asterisk API',
       version: readCargoVersion(),

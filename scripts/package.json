@@ -6,7 +6,8 @@
   "scripts": {
     "export:bindings": "node ts-export.js",
     "email:preview": "node email-preview.mjs",
-    "openapi:preview": "node openapi/preview.mjs"
+    "openapi:preview": "node openapi/preview.mjs",
+    "sdk:generate": "node generate-sdk.js"
   },
   "keywords": [],
   "author": "",

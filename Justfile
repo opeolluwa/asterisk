@@ -109,6 +109,15 @@ openapi-check:
 openapi-preview:
     node scripts/openapi/preview.mjs
 
+#Generate all SDKs (Go + TypeScript) from docs/openapi.json
+sdk:
+    node scripts/generate-sdk.js
+
+#Generate Go SDK only (requires oapi-codegen: go install github.com/oapi-codegen/oapi-codegen/v2/cmd/oapi-codegen@latest)
+sdk-go:
+    mkdir -p sdk-go
+    $(go env GOPATH)/bin/oapi-codegen -package asterisk -generate types,client,spec -o sdk-go/client.go -response-type-suffix Resp docs/openapi.json
+
 #Run backend test suite
 test:
     cargo test
@@ -120,3 +129,6 @@ release bump="patch":
 build-prod:
     docker build -f docker/prod/Dockerfile -t asterisk:prod .
     docker images asterisk:prod
+
+prepare:
+    go install github.com/oapi-codegen/oapi-codegen/v2/cmd/oapi-codegen@latest 2>&1

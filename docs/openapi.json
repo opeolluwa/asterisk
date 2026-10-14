@@ -1,5 +1,5 @@
 {
-  "openapi": "3.1.0",
+  "openapi": "3.0.3",
   "info": {
     "title": "asterisk API",
     "version": "0.6.2",
@@ -83,7 +83,7 @@
           "Complaints"
         ],
         "summary": "Find all complaints",
-        "operationId": "find_all_complaints_complaint",
+        "operationId": "find_all_complaints",
         "security": [
           {
             "bearerAuth": []
@@ -98,31 +98,7 @@
                   "type": "array",
                   "items": {
                     "type": "array",
-                    "prefixItems": [
-                      {
-                        "$ref": "#/components/schemas/ComplaintsModel"
-                      },
-                      {
-                        "anyOf": [
-                          {
-                            "$ref": "#/components/schemas/CustomerProfile"
-                          },
-                          {
-                            "type": "null"
-                          }
-                        ]
-                      },
-                      {
-                        "anyOf": [
-                          {
-                            "$ref": "#/components/schemas/OrdersModel"
-                          },
-                          {
-                            "type": "null"
-                          }
-                        ]
-                      }
-                    ],
+                    "items": {},
                     "minItems": 3,
                     "maxItems": 3
                   }
@@ -169,7 +145,7 @@
           "Complaints"
         ],
         "summary": "Count complaints",
-        "operationId": "count_complaints_complaint",
+        "operationId": "count_complaints",
         "security": [
           {
             "bearerAuth": []
@@ -225,7 +201,7 @@
           "Complaints"
         ],
         "summary": "Find complaint by identifier",
-        "operationId": "find_complaint_by_identifier_complaint",
+        "operationId": "find_complaint_by_identifier",
         "security": [
           {
             "bearerAuth": []
@@ -248,31 +224,7 @@
               "application/json": {
                 "schema": {
                   "type": "array",
-                  "prefixItems": [
-                    {
-                      "$ref": "#/components/schemas/ComplaintsModel"
-                    },
-                    {
-                      "anyOf": [
-                        {
-                          "$ref": "#/components/schemas/CustomerProfile"
-                        },
-                        {
-                          "type": "null"
-                        }
-                      ]
-                    },
-                    {
-                      "anyOf": [
-                        {
-                          "$ref": "#/components/schemas/OrdersModel"
-                        },
-                        {
-                          "type": "null"
-                        }
-                      ]
-                    }
-                  ],
+                  "items": {},
                   "minItems": 3,
                   "maxItems": 3
                 }
@@ -316,7 +268,7 @@
           "Complaints"
         ],
         "summary": "Update complaint",
-        "operationId": "update_complaint_complaint",
+        "operationId": "update_complaint",
         "security": [
           {
             "bearerAuth": []
@@ -390,7 +342,7 @@
           "Complaints"
         ],
         "summary": "Archive complaint",
-        "operationId": "archive_complaint_complaint",
+        "operationId": "archive_complaint",
         "security": [
           {
             "bearerAuth": []
@@ -456,7 +408,7 @@
           "Complaints"
         ],
         "summary": "Find complaint replies",
-        "operationId": "find_complaint_replies_complaint",
+        "operationId": "find_complaint_replies",
         "security": [
           {
             "bearerAuth": []
@@ -523,7 +475,7 @@
           "Complaints"
         ],
         "summary": "Reply to complaint",
-        "operationId": "reply_to_complaint_complaint",
+        "operationId": "reply_to_complaint",
         "security": [
           {
             "bearerAuth": []
@@ -599,7 +551,7 @@
           "App Config"
         ],
         "summary": "Fetch app config",
-        "operationId": "fetch_app_config_app_config",
+        "operationId": "fetch_app_config",
         "security": [
           {
             "bearerAuth": []
@@ -611,14 +563,12 @@
             "content": {
               "application/json": {
                 "schema": {
-                  "anyOf": [
+                  "allOf": [
                     {
                       "$ref": "#/components/schemas/AppConfigModel"
-                    },
-                    {
-                      "type": "null"
                     }
-                  ]
+                  ],
+                  "nullable": true
                 }
               }
             }
@@ -660,7 +610,7 @@
           "App Config"
         ],
         "summary": "Update app config",
-        "operationId": "update_app_config_app_config",
+        "operationId": "update_app_config",
         "security": [
           {
             "bearerAuth": []
@@ -726,7 +676,7 @@
           "Customer Addresses"
         ],
         "summary": "Find all customer address",
-        "operationId": "find_all_customer_address_customer_address",
+        "operationId": "find_all_customer_address",
         "security": [
           {
             "bearerAuth": []
@@ -783,7 +733,7 @@
           "Customer Addresses"
         ],
         "summary": "Create customer address",
-        "operationId": "create_customer_address_customer_address",
+        "operationId": "create_customer_address",
         "security": [
           {
             "bearerAuth": []
@@ -849,7 +799,7 @@
           "Customer Addresses"
         ],
         "summary": "Count customer address",
-        "operationId": "count_customer_address_customer_address",
+        "operationId": "count_customer_address",
         "security": [
           {
             "bearerAuth": []
@@ -905,7 +855,7 @@
           "Customer Addresses"
         ],
         "summary": "Find customer address by identifier",
-        "operationId": "find_customer_address_by_identifier_customer_address",
+        "operationId": "find_customer_address_by_identifier",
         "security": [
           {
             "bearerAuth": []
@@ -969,7 +919,7 @@
           "Customer Addresses"
         ],
         "summary": "Update customer address by identifier",
-        "operationId": "update_customer_address_by_identifier_customer_address",
+        "operationId": "update_customer_address_by_identifier",
         "security": [
           {
             "bearerAuth": []
@@ -1043,7 +993,7 @@
           "Customer Addresses"
         ],
         "summary": "Delete customer address by identifier",
-        "operationId": "delete_customer_address_by_identifier_customer_address",
+        "operationId": "delete_customer_address_by_identifier",
         "security": [
           {
             "bearerAuth": []
@@ -1109,7 +1059,7 @@
           "Cart"
         ],
         "summary": "Find cart",
-        "operationId": "find_cart_cart",
+        "operationId": "find_cart",
         "description": "Authentication is optional on this endpoint.",
         "responses": {
           "200": {
@@ -1151,7 +1101,7 @@
           "Cart"
         ],
         "summary": "Count cart items",
-        "operationId": "count_cart_items_cart",
+        "operationId": "count_cart_items",
         "description": "Authentication is optional on this endpoint.",
         "responses": {
           "200": {
@@ -1193,7 +1143,7 @@
           "Cart"
         ],
         "summary": "Add cart item",
-        "operationId": "add_cart_item_cart",
+        "operationId": "add_cart_item",
         "description": "Authentication is optional on this endpoint.",
         "requestBody": {
           "required": true,
@@ -1245,7 +1195,7 @@
           "Cart"
         ],
         "summary": "Find cart item by identifier",
-        "operationId": "find_cart_item_by_identifier_cart",
+        "operationId": "find_cart_item_by_identifier",
         "description": "Authentication is optional on this endpoint.",
         "parameters": [
           {
@@ -1295,7 +1245,7 @@
           "Cart"
         ],
         "summary": "Update cart item by identifier",
-        "operationId": "update_cart_item_by_identifier_cart",
+        "operationId": "update_cart_item_by_identifier",
         "description": "Authentication is optional on this endpoint.",
         "parameters": [
           {
@@ -1355,7 +1305,7 @@
           "Cart"
         ],
         "summary": "Delete cart item by identifier",
-        "operationId": "delete_cart_item_by_identifier_cart",
+        "operationId": "delete_cart_item_by_identifier",
         "description": "Authentication is optional on this endpoint.",
         "parameters": [
           {
@@ -1407,7 +1357,7 @@
           "Cart"
         ],
         "summary": "Sync cart",
-        "operationId": "sync_cart_cart",
+        "operationId": "sync_cart",
         "security": [
           {
             "bearerAuth": []
@@ -1463,7 +1413,7 @@
           "Customer Complaints"
         ],
         "summary": "Find customer complaints",
-        "operationId": "find_customer_complaints_customer_complaint",
+        "operationId": "find_customer_complaints",
         "security": [
           {
             "bearerAuth": []
@@ -1520,7 +1470,7 @@
           "Customer Complaints"
         ],
         "summary": "Create customer complaint",
-        "operationId": "create_customer_complaint_customer_complaint",
+        "operationId": "create_customer_complaint",
         "security": [
           {
             "bearerAuth": []
@@ -1586,7 +1536,7 @@
           "Customer Complaints"
         ],
         "summary": "Find customer complaint by identifier",
-        "operationId": "find_customer_complaint_by_identifier_customer_complaint",
+        "operationId": "find_customer_complaint_by_identifier",
         "security": [
           {
             "bearerAuth": []
@@ -1652,7 +1602,7 @@
           "Customer Complaints"
         ],
         "summary": "Find customer complaint replies",
-        "operationId": "find_customer_complaint_replies_customer_complaint",
+        "operationId": "find_customer_complaint_replies",
         "security": [
           {
             "bearerAuth": []
@@ -1719,7 +1669,7 @@
           "Customer Complaints"
         ],
         "summary": "Reply to customer complaint",
-        "operationId": "reply_to_customer_complaint_customer_complaint",
+        "operationId": "reply_to_customer_complaint",
         "security": [
           {
             "bearerAuth": []
@@ -1795,7 +1745,7 @@
           "General"
         ],
         "summary": "Find customer notification preferences",
-        "operationId": "find_customer_notification_preferences_customer_notification_preferences",
+        "operationId": "find_customer_notification_preferences",
         "security": [
           {
             "bearerAuth": []
@@ -1852,7 +1802,7 @@
           "General"
         ],
         "summary": "Update customer notification preferences",
-        "operationId": "update_customer_notification_preferences_customer_notification_preferences",
+        "operationId": "update_customer_notification_preferences",
         "security": [
           {
             "bearerAuth": []
@@ -1921,7 +1871,7 @@
           "General"
         ],
         "summary": "Find customer notifications",
-        "operationId": "find_customer_notifications_customer_notification",
+        "operationId": "find_customer_notifications",
         "security": [
           {
             "bearerAuth": []
@@ -1980,7 +1930,7 @@
           "General"
         ],
         "summary": "Count customer notifications",
-        "operationId": "count_customer_notifications_customer_notification",
+        "operationId": "count_customer_notifications",
         "security": [
           {
             "bearerAuth": []
@@ -2036,7 +1986,7 @@
           "General"
         ],
         "summary": "Find customer notification by identifier",
-        "operationId": "find_customer_notification_by_identifier_customer_notification",
+        "operationId": "find_customer_notification_by_identifier",
         "security": [
           {
             "bearerAuth": []
@@ -2100,7 +2050,7 @@
           "General"
         ],
         "summary": "Update customer notification by identifier",
-        "operationId": "update_customer_notification_by_identifier_customer_notification",
+        "operationId": "update_customer_notification_by_identifier",
         "security": [
           {
             "bearerAuth": []
@@ -2174,7 +2124,7 @@
           "General"
         ],
         "summary": "Archive customer notification by identifier",
-        "operationId": "archive_customer_notification_by_identifier_customer_notification",
+        "operationId": "archive_customer_notification_by_identifier",
         "security": [
           {
             "bearerAuth": []
@@ -2240,7 +2190,7 @@
           "Customer Orders"
         ],
         "summary": "Find customer orders",
-        "operationId": "find_customer_orders_customer_order",
+        "operationId": "find_customer_orders",
         "security": [
           {
             "bearerAuth": []
@@ -2252,14 +2202,12 @@
             "in": "query",
             "required": false,
             "schema": {
-              "anyOf": [
+              "allOf": [
                 {
                   "$ref": "#/components/schemas/OrderStatus"
-                },
-                {
-                  "type": "null"
                 }
-              ]
+              ],
+              "nullable": true
             }
           }
         ],
@@ -2314,7 +2262,7 @@
           "Customer Orders"
         ],
         "summary": "Create customer order",
-        "operationId": "create_customer_order_customer_order",
+        "operationId": "create_customer_order",
         "security": [
           {
             "bearerAuth": []
@@ -2380,7 +2328,7 @@
           "Customer Orders"
         ],
         "summary": "Checkout customer order",
-        "operationId": "checkout_customer_order_customer_order",
+        "operationId": "checkout_customer_order",
         "security": [
           {
             "bearerAuth": []
@@ -2444,7 +2392,7 @@
           "Customer Orders"
         ],
         "summary": "Find customer order by identifier",
-        "operationId": "find_customer_order_by_identifier_customer_order",
+        "operationId": "find_customer_order_by_identifier",
         "security": [
           {
             "bearerAuth": []
@@ -2510,7 +2458,7 @@
           "Customers"
         ],
         "summary": "Find all customers",
-        "operationId": "find_all_customers_customer",
+        "operationId": "find_all_customers",
         "security": [
           {
             "bearerAuth": []
@@ -2569,7 +2517,7 @@
           "Customer Authentication"
         ],
         "summary": "Confirm customer account",
-        "operationId": "confirm_customer_account_customer_auth",
+        "operationId": "confirm_customer_account",
         "security": [
           {
             "bearerAuth": []
@@ -2635,7 +2583,7 @@
           "Customers"
         ],
         "summary": "Count customers",
-        "operationId": "count_customers_customer",
+        "operationId": "count_customers",
         "security": [
           {
             "bearerAuth": []
@@ -2691,7 +2639,7 @@
           "Customer Authentication"
         ],
         "summary": "Login customer",
-        "operationId": "login_customer_customer_auth",
+        "operationId": "login_customer",
         "requestBody": {
           "required": true,
           "content": {
@@ -2742,7 +2690,7 @@
           "Customer Authentication"
         ],
         "summary": "Logout",
-        "operationId": "logout_customer_auth",
+        "operationId": "logout_2",
         "security": [
           {
             "bearerAuth": []
@@ -2798,7 +2746,7 @@
           "Customer Authentication"
         ],
         "summary": "Get customer profile",
-        "operationId": "get_customer_profile_customer_auth",
+        "operationId": "get_customer_profile",
         "security": [
           {
             "bearerAuth": []
@@ -2852,7 +2800,7 @@
           "Customer Authentication"
         ],
         "summary": "Update customer profile",
-        "operationId": "update_customer_profile_customer_auth",
+        "operationId": "update_customer_profile",
         "security": [
           {
             "bearerAuth": []
@@ -2918,7 +2866,7 @@
           "Customer Authentication"
         ],
         "summary": "Update customer avatar",
-        "operationId": "update_customer_avatar_customer_auth",
+        "operationId": "update_customer_avatar",
         "security": [
           {
             "bearerAuth": []
@@ -2993,7 +2941,7 @@
           "Customer Authentication"
         ],
         "summary": "Complete customer onboarding",
-        "operationId": "complete_customer_onboarding_customer_auth",
+        "operationId": "complete_customer_onboarding",
         "security": [
           {
             "bearerAuth": []
@@ -3059,7 +3007,7 @@
           "Customer Authentication"
         ],
         "summary": "Refresh customer token",
-        "operationId": "refresh_customer_token_customer_auth",
+        "operationId": "refresh_customer_token",
         "responses": {
           "200": {
             "description": "Success",
@@ -3100,7 +3048,7 @@
           "Customer Authentication"
         ],
         "summary": "Request customer otp",
-        "operationId": "request_customer_otp_customer_auth",
+        "operationId": "request_customer_otp",
         "security": [
           {
             "bearerAuth": []
@@ -3156,7 +3104,7 @@
           "Customer Authentication"
         ],
         "summary": "Request password reset",
-        "operationId": "request_password_reset_customer_auth",
+        "operationId": "request_password_reset",
         "requestBody": {
           "required": true,
           "content": {
@@ -3207,7 +3155,7 @@
           "Customer Authentication"
         ],
         "summary": "Reset customer account",
-        "operationId": "reset_customer_account_customer_auth",
+        "operationId": "reset_customer_account",
         "security": [
           {
             "bearerAuth": []
@@ -3273,7 +3221,7 @@
           "Customer Authentication"
         ],
         "summary": "Sign up customer",
-        "operationId": "sign_up_customer_customer_auth",
+        "operationId": "sign_up_customer",
         "requestBody": {
           "required": true,
           "content": {
@@ -3324,7 +3272,7 @@
           "Customer Authentication"
         ],
         "summary": "Verify customer otp",
-        "operationId": "verify_customer_otp_customer_auth",
+        "operationId": "verify_customer_otp",
         "security": [
           {
             "bearerAuth": []
@@ -3390,7 +3338,7 @@
           "Customers"
         ],
         "summary": "Find customer by identifier",
-        "operationId": "find_customer_by_identifier_customer",
+        "operationId": "find_customer_by_identifier",
         "security": [
           {
             "bearerAuth": []
@@ -3454,7 +3402,7 @@
           "Customers"
         ],
         "summary": "Deactivate customer by identifier",
-        "operationId": "deactivate_customer_by_identifier_customer",
+        "operationId": "deactivate_customer_by_identifier",
         "security": [
           {
             "bearerAuth": []
@@ -3520,7 +3468,7 @@
           "Customers"
         ],
         "summary": "Deactivate customer",
-        "operationId": "deactivate_customer_customer",
+        "operationId": "deactivate_customer",
         "security": [
           {
             "bearerAuth": []
@@ -3586,7 +3534,7 @@
           "Customers"
         ],
         "summary": "Reactivate customer",
-        "operationId": "reactivate_customer_customer",
+        "operationId": "reactivate_customer",
         "security": [
           {
             "bearerAuth": []
@@ -3652,7 +3600,7 @@
           "Emails"
         ],
         "summary": "Find all emails",
-        "operationId": "find_all_emails_email",
+        "operationId": "find_all_emails",
         "security": [
           {
             "bearerAuth": []
@@ -3664,10 +3612,8 @@
             "in": "query",
             "required": false,
             "schema": {
-              "type": [
-                "string",
-                "null"
-              ]
+              "type": "string",
+              "nullable": true
             }
           },
           {
@@ -3675,10 +3621,8 @@
             "in": "query",
             "required": false,
             "schema": {
-              "type": [
-                "string",
-                "null"
-              ]
+              "type": "string",
+              "nullable": true
             }
           },
           {
@@ -3686,10 +3630,8 @@
             "in": "query",
             "required": false,
             "schema": {
-              "type": [
-                "boolean",
-                "null"
-              ]
+              "type": "boolean",
+              "nullable": true
             }
           },
           {
@@ -3697,10 +3639,8 @@
             "in": "query",
             "required": false,
             "schema": {
-              "type": [
-                "boolean",
-                "null"
-              ]
+              "type": "boolean",
+              "nullable": true
             }
           },
           {
@@ -3708,10 +3648,8 @@
             "in": "query",
             "required": false,
             "schema": {
-              "type": [
-                "boolean",
-                "null"
-              ]
+              "type": "boolean",
+              "nullable": true
             }
           },
           {
@@ -3719,10 +3657,8 @@
             "in": "query",
             "required": false,
             "schema": {
-              "type": [
-                "integer",
-                "null"
-              ]
+              "type": "integer",
+              "nullable": true
             }
           },
           {
@@ -3730,10 +3666,8 @@
             "in": "query",
             "required": false,
             "schema": {
-              "type": [
-                "integer",
-                "null"
-              ]
+              "type": "integer",
+              "nullable": true
             }
           }
         ],
@@ -3812,7 +3746,7 @@
           "Emails"
         ],
         "summary": "Create email",
-        "operationId": "create_email_email",
+        "operationId": "create_email",
         "security": [
           {
             "bearerAuth": []
@@ -3878,7 +3812,7 @@
           "Emails"
         ],
         "summary": "Count emails",
-        "operationId": "count_emails_email",
+        "operationId": "count_emails",
         "security": [
           {
             "bearerAuth": []
@@ -3934,7 +3868,7 @@
           "Emails"
         ],
         "summary": "Count unread emails",
-        "operationId": "count_unread_emails_email",
+        "operationId": "count_unread_emails",
         "security": [
           {
             "bearerAuth": []
@@ -3990,7 +3924,7 @@
           "Emails"
         ],
         "summary": "Find starred emails",
-        "operationId": "find_starred_emails_email",
+        "operationId": "find_starred_emails",
         "security": [
           {
             "bearerAuth": []
@@ -4049,7 +3983,7 @@
           "Emails"
         ],
         "summary": "Find emails by tag",
-        "operationId": "find_emails_by_tag_email",
+        "operationId": "find_emails_by_tag",
         "security": [
           {
             "bearerAuth": []
@@ -4118,7 +4052,7 @@
           "Emails"
         ],
         "summary": "Find unread emails",
-        "operationId": "find_unread_emails_email",
+        "operationId": "find_unread_emails",
         "security": [
           {
             "bearerAuth": []
@@ -4177,7 +4111,7 @@
           "Emails"
         ],
         "summary": "Find email by identifier",
-        "operationId": "find_email_by_identifier_email",
+        "operationId": "find_email_by_identifier",
         "security": [
           {
             "bearerAuth": []
@@ -4241,7 +4175,7 @@
           "Emails"
         ],
         "summary": "Update email",
-        "operationId": "update_email_email",
+        "operationId": "update_email",
         "security": [
           {
             "bearerAuth": []
@@ -4315,7 +4249,7 @@
           "Emails"
         ],
         "summary": "Delete email",
-        "operationId": "delete_email_email",
+        "operationId": "delete_email",
         "security": [
           {
             "bearerAuth": []
@@ -4381,7 +4315,7 @@
           "Emails"
         ],
         "summary": "Mark email as read",
-        "operationId": "mark_email_as_read_email",
+        "operationId": "mark_email_as_read",
         "security": [
           {
             "bearerAuth": []
@@ -4447,7 +4381,7 @@
           "Authentication"
         ],
         "summary": "Forgotten password",
-        "operationId": "forgotten_password_auth",
+        "operationId": "forgotten_password",
         "requestBody": {
           "required": true,
           "content": {
@@ -4498,7 +4432,7 @@
           "Inventory"
         ],
         "summary": "Find all inventory",
-        "operationId": "find_all_inventory_inventory",
+        "operationId": "find_all_inventory",
         "security": [
           {
             "bearerAuth": []
@@ -4597,7 +4531,7 @@
           "Inventory"
         ],
         "summary": "Create inventory",
-        "operationId": "create_inventory_inventory",
+        "operationId": "create_inventory",
         "security": [
           {
             "bearerAuth": []
@@ -4663,7 +4597,7 @@
           "Inventory"
         ],
         "summary": "Count inventory",
-        "operationId": "count_inventory_inventory",
+        "operationId": "count_inventory",
         "security": [
           {
             "bearerAuth": []
@@ -4719,7 +4653,7 @@
           "Inventory"
         ],
         "summary": "Find inventory by identifier",
-        "operationId": "find_inventory_by_identifier_inventory",
+        "operationId": "find_inventory_by_identifier",
         "security": [
           {
             "bearerAuth": []
@@ -4783,7 +4717,7 @@
           "Inventory"
         ],
         "summary": "Update inventory by identifier",
-        "operationId": "update_inventory_by_identifier_inventory",
+        "operationId": "update_inventory_by_identifier",
         "security": [
           {
             "bearerAuth": []
@@ -4857,7 +4791,7 @@
           "Inventory"
         ],
         "summary": "Delete inventory by identifier",
-        "operationId": "delete_inventory_by_identifier_inventory",
+        "operationId": "delete_inventory_by_identifier",
         "security": [
           {
             "bearerAuth": []
@@ -4923,7 +4857,7 @@
           "Invitations"
         ],
         "summary": "Find all invitations",
-        "operationId": "find_all_invitations_invitation",
+        "operationId": "find_all_invitations",
         "security": [
           {
             "bearerAuth": []
@@ -4980,7 +4914,7 @@
           "Invitations"
         ],
         "summary": "Create invitation",
-        "operationId": "create_invitation_invitation",
+        "operationId": "create_invitation",
         "security": [
           {
             "bearerAuth": []
@@ -5046,7 +4980,7 @@
           "Invitations"
         ],
         "summary": "Count invitations",
-        "operationId": "count_invitations_invitation",
+        "operationId": "count_invitations",
         "security": [
           {
             "bearerAuth": []
@@ -5102,7 +5036,7 @@
           "Invitations"
         ],
         "summary": "Find invitation by identifier",
-        "operationId": "find_invitation_by_identifier_invitation",
+        "operationId": "find_invitation_by_identifier",
         "security": [
           {
             "bearerAuth": []
@@ -5166,7 +5100,7 @@
           "Invitations"
         ],
         "summary": "Delete invitation",
-        "operationId": "delete_invitation_invitation",
+        "operationId": "delete_invitation",
         "security": [
           {
             "bearerAuth": []
@@ -5232,7 +5166,7 @@
           "Invitations"
         ],
         "summary": "Accept invitation",
-        "operationId": "accept_invitation_invitation",
+        "operationId": "accept_invitation",
         "parameters": [
           {
             "name": "identifier",
@@ -5293,7 +5227,7 @@
           "Invitations"
         ],
         "summary": "Block invitation",
-        "operationId": "block_invitation_invitation",
+        "operationId": "block_invitation",
         "security": [
           {
             "bearerAuth": []
@@ -5359,7 +5293,7 @@
           "Invitations"
         ],
         "summary": "Preview invitation",
-        "operationId": "preview_invitation_invitation",
+        "operationId": "preview_invitation",
         "parameters": [
           {
             "name": "identifier",
@@ -5410,7 +5344,7 @@
           "Invitations"
         ],
         "summary": "Resend invitation",
-        "operationId": "resend_invitation_invitation",
+        "operationId": "resend_invitation",
         "security": [
           {
             "bearerAuth": []
@@ -5476,7 +5410,7 @@
           "Authentication"
         ],
         "summary": "Login",
-        "operationId": "login_auth",
+        "operationId": "login",
         "requestBody": {
           "required": true,
           "content": {
@@ -5527,7 +5461,7 @@
           "Authentication"
         ],
         "summary": "Logout",
-        "operationId": "logout_auth",
+        "operationId": "logout",
         "security": [
           {
             "bearerAuth": []
@@ -5583,7 +5517,7 @@
           "Marketplace"
         ],
         "summary": "Find all marketplace",
-        "operationId": "find_all_marketplace_marketplace",
+        "operationId": "find_all_marketplace",
         "parameters": [
           {
             "name": "page",
@@ -5606,10 +5540,8 @@
             "in": "query",
             "required": false,
             "schema": {
-              "type": [
-                "string",
-                "null"
-              ]
+              "type": "string",
+              "nullable": true
             }
           },
           {
@@ -5617,10 +5549,8 @@
             "in": "query",
             "required": false,
             "schema": {
-              "type": [
-                "boolean",
-                "null"
-              ]
+              "type": "boolean",
+              "nullable": true
             }
           },
           {
@@ -5699,7 +5629,7 @@
           "Marketplace"
         ],
         "summary": "Find marketplace by identifier",
-        "operationId": "find_marketplace_by_identifier_marketplace",
+        "operationId": "find_marketplace_by_identifier",
         "parameters": [
           {
             "name": "identifier",
@@ -5750,7 +5680,7 @@
           "General"
         ],
         "summary": "Fetch dashboard metrics",
-        "operationId": "fetch_dashboard_metrics_metrics",
+        "operationId": "fetch_dashboard_metrics",
         "security": [
           {
             "bearerAuth": []
@@ -5762,10 +5692,8 @@
             "in": "query",
             "required": false,
             "schema": {
-              "type": [
-                "integer",
-                "null"
-              ]
+              "type": "integer",
+              "nullable": true
             }
           }
         ],
@@ -5819,7 +5747,7 @@
           "Notifications"
         ],
         "summary": "Find notification preferences",
-        "operationId": "find_notification_preferences_notification_preferences",
+        "operationId": "find_notification_preferences",
         "security": [
           {
             "bearerAuth": []
@@ -5876,7 +5804,7 @@
           "Notifications"
         ],
         "summary": "Update notification preferences",
-        "operationId": "update_notification_preferences_notification_preferences",
+        "operationId": "update_notification_preferences",
         "security": [
           {
             "bearerAuth": []
@@ -5945,7 +5873,7 @@
           "Notifications"
         ],
         "summary": "Find all notifications",
-        "operationId": "find_all_notifications_notifications",
+        "operationId": "find_all_notifications",
         "security": [
           {
             "bearerAuth": []
@@ -5957,10 +5885,8 @@
             "in": "query",
             "required": false,
             "schema": {
-              "type": [
-                "integer",
-                "null"
-              ]
+              "type": "integer",
+              "nullable": true
             }
           },
           {
@@ -5968,10 +5894,8 @@
             "in": "query",
             "required": false,
             "schema": {
-              "type": [
-                "integer",
-                "null"
-              ]
+              "type": "integer",
+              "nullable": true
             }
           },
           {
@@ -5979,10 +5903,8 @@
             "in": "query",
             "required": false,
             "schema": {
-              "type": [
-                "string",
-                "null"
-              ]
+              "type": "string",
+              "nullable": true
             }
           },
           {
@@ -5996,10 +5918,8 @@
             "in": "query",
             "required": false,
             "schema": {
-              "type": [
-                "boolean",
-                "null"
-              ]
+              "type": "boolean",
+              "nullable": true
             }
           },
           {
@@ -6007,10 +5927,8 @@
             "in": "query",
             "required": false,
             "schema": {
-              "type": [
-                "boolean",
-                "null"
-              ]
+              "type": "boolean",
+              "nullable": true
             }
           }
         ],
@@ -6091,7 +6009,7 @@
           "Notifications"
         ],
         "summary": "Count notifications",
-        "operationId": "count_notifications_notifications",
+        "operationId": "count_notifications",
         "security": [
           {
             "bearerAuth": []
@@ -6147,7 +6065,7 @@
           "Notifications"
         ],
         "summary": "Mark all notifications read",
-        "operationId": "mark_all_notifications_read_notifications",
+        "operationId": "mark_all_notifications_read",
         "security": [
           {
             "bearerAuth": []
@@ -6204,7 +6122,7 @@
           "Notifications"
         ],
         "summary": "Find notifications by identifier",
-        "operationId": "find_notifications_by_identifier_notifications",
+        "operationId": "find_notifications_by_identifier",
         "security": [
           {
             "bearerAuth": []
@@ -6268,7 +6186,7 @@
           "Notifications"
         ],
         "summary": "Update notifications by identifier",
-        "operationId": "update_notifications_by_identifier_notifications",
+        "operationId": "update_notifications_by_identifier",
         "security": [
           {
             "bearerAuth": []
@@ -6342,7 +6260,7 @@
           "Notifications"
         ],
         "summary": "Delete notifications by identifier",
-        "operationId": "delete_notifications_by_identifier_notifications",
+        "operationId": "delete_notifications_by_identifier",
         "security": [
           {
             "bearerAuth": []
@@ -6408,7 +6326,7 @@
           "Notifications"
         ],
         "summary": "Find notification deliveries",
-        "operationId": "find_notification_deliveries_notifications",
+        "operationId": "find_notification_deliveries",
         "security": [
           {
             "bearerAuth": []
@@ -6475,7 +6393,7 @@
           "Orders"
         ],
         "summary": "Find all orders",
-        "operationId": "find_all_orders_orders",
+        "operationId": "find_all_orders",
         "security": [
           {
             "bearerAuth": []
@@ -6487,10 +6405,8 @@
             "in": "query",
             "required": false,
             "schema": {
-              "type": [
-                "integer",
-                "null"
-              ]
+              "type": "integer",
+              "nullable": true
             }
           },
           {
@@ -6498,10 +6414,8 @@
             "in": "query",
             "required": false,
             "schema": {
-              "type": [
-                "integer",
-                "null"
-              ]
+              "type": "integer",
+              "nullable": true
             }
           },
           {
@@ -6509,14 +6423,12 @@
             "in": "query",
             "required": false,
             "schema": {
-              "anyOf": [
+              "allOf": [
                 {
                   "$ref": "#/components/schemas/OrderStatus"
-                },
-                {
-                  "type": "null"
                 }
-              ]
+              ],
+              "nullable": true
             }
           }
         ],
@@ -6568,7 +6480,7 @@
           "Orders"
         ],
         "summary": "Count orders",
-        "operationId": "count_orders_orders",
+        "operationId": "count_orders",
         "security": [
           {
             "bearerAuth": []
@@ -6624,7 +6536,7 @@
           "Orders"
         ],
         "summary": "Find orders by identifier",
-        "operationId": "find_orders_by_identifier_orders",
+        "operationId": "find_orders_by_identifier",
         "security": [
           {
             "bearerAuth": []
@@ -6688,7 +6600,7 @@
           "Orders"
         ],
         "summary": "Update orders by identifier",
-        "operationId": "update_orders_by_identifier_orders",
+        "operationId": "update_orders_by_identifier",
         "security": [
           {
             "bearerAuth": []
@@ -6762,7 +6674,7 @@
           "Orders"
         ],
         "summary": "Delete orders by identifier",
-        "operationId": "delete_orders_by_identifier_orders",
+        "operationId": "delete_orders_by_identifier",
         "security": [
           {
             "bearerAuth": []
@@ -6828,7 +6740,7 @@
           "Orders"
         ],
         "summary": "Update order item by identifier",
-        "operationId": "update_order_item_by_identifier_orders",
+        "operationId": "update_order_item_by_identifier",
         "security": [
           {
             "bearerAuth": []
@@ -6910,7 +6822,7 @@
           "Orders"
         ],
         "summary": "Delete order item by identifier",
-        "operationId": "delete_order_item_by_identifier_orders",
+        "operationId": "delete_order_item_by_identifier",
         "security": [
           {
             "bearerAuth": []
@@ -6984,7 +6896,7 @@
           "Payments"
         ],
         "summary": "Confirm payment",
-        "operationId": "confirm_payment_payment",
+        "operationId": "confirm_payment",
         "security": [
           {
             "bearerAuth": []
@@ -7050,7 +6962,7 @@
           "Payments"
         ],
         "summary": "Initialize payment",
-        "operationId": "initialize_payment_payment",
+        "operationId": "initialize_payment",
         "security": [
           {
             "bearerAuth": []
@@ -7114,7 +7026,7 @@
           "Payments"
         ],
         "summary": "Handle payment webhook",
-        "operationId": "handle_payment_webhook_payment",
+        "operationId": "handle_payment_webhook",
         "responses": {
           "200": {
             "description": "Success",
@@ -7149,7 +7061,7 @@
           "Products"
         ],
         "summary": "Find all products",
-        "operationId": "find_all_products_products",
+        "operationId": "find_all_products",
         "security": [
           {
             "bearerAuth": []
@@ -7206,7 +7118,7 @@
           "Products"
         ],
         "summary": "Create product",
-        "operationId": "create_product_products",
+        "operationId": "create_product",
         "security": [
           {
             "bearerAuth": []
@@ -7272,7 +7184,7 @@
           "Products"
         ],
         "summary": "Find product",
-        "operationId": "find_product_products",
+        "operationId": "find_product",
         "security": [
           {
             "bearerAuth": []
@@ -7338,7 +7250,7 @@
           "Authentication"
         ],
         "summary": "Request refresh token",
-        "operationId": "request_refresh_token_auth",
+        "operationId": "request_refresh_token",
         "responses": {
           "200": {
             "description": "Success",
@@ -7379,7 +7291,7 @@
           "Authentication"
         ],
         "summary": "Request new otp",
-        "operationId": "request_new_otp_auth",
+        "operationId": "request_new_otp",
         "security": [
           {
             "bearerAuth": []
@@ -7445,7 +7357,7 @@
           "Authentication"
         ],
         "summary": "Set new password",
-        "operationId": "set_new_password_auth",
+        "operationId": "set_new_password",
         "security": [
           {
             "bearerAuth": []
@@ -7511,7 +7423,7 @@
           "Roles"
         ],
         "summary": "Find all roles",
-        "operationId": "find_all_roles_roles",
+        "operationId": "find_all_roles",
         "security": [
           {
             "bearerAuth": []
@@ -7568,7 +7480,7 @@
           "Roles"
         ],
         "summary": "Create role",
-        "operationId": "create_role_roles",
+        "operationId": "create_role",
         "security": [
           {
             "bearerAuth": []
@@ -7634,7 +7546,7 @@
           "Roles"
         ],
         "summary": "Find role by identifier",
-        "operationId": "find_role_by_identifier_roles",
+        "operationId": "find_role_by_identifier",
         "security": [
           {
             "bearerAuth": []
@@ -7698,7 +7610,7 @@
           "Roles"
         ],
         "summary": "Update role",
-        "operationId": "update_role_roles",
+        "operationId": "update_role",
         "security": [
           {
             "bearerAuth": []
@@ -7772,7 +7684,7 @@
           "Roles"
         ],
         "summary": "Archive role",
-        "operationId": "archive_role_roles",
+        "operationId": "archive_role",
         "security": [
           {
             "bearerAuth": []
@@ -7838,7 +7750,7 @@
           "Roles"
         ],
         "summary": "Assign role",
-        "operationId": "assign_role_roles",
+        "operationId": "assign_role",
         "security": [
           {
             "bearerAuth": []
@@ -7914,7 +7826,7 @@
           "Roles"
         ],
         "summary": "Add permission",
-        "operationId": "add_permission_roles",
+        "operationId": "add_permission",
         "security": [
           {
             "bearerAuth": []
@@ -7988,7 +7900,7 @@
           "Roles"
         ],
         "summary": "Remove permission",
-        "operationId": "remove_permission_roles",
+        "operationId": "remove_permission",
         "security": [
           {
             "bearerAuth": []
@@ -8064,7 +7976,7 @@
           "Team"
         ],
         "summary": "Find all team members",
-        "operationId": "find_all_team_members_teams",
+        "operationId": "find_all_team_members",
         "security": [
           {
             "bearerAuth": []
@@ -8123,7 +8035,7 @@
           "Team"
         ],
         "summary": "Count team members",
-        "operationId": "count_team_members_teams",
+        "operationId": "count_team_members",
         "security": [
           {
             "bearerAuth": []
@@ -8179,7 +8091,7 @@
           "Team"
         ],
         "summary": "Invite team member",
-        "operationId": "invite_team_member_teams",
+        "operationId": "invite_team_member",
         "security": [
           {
             "bearerAuth": []
@@ -8245,7 +8157,7 @@
           "Team"
         ],
         "summary": "Find team member by identifier",
-        "operationId": "find_team_member_by_identifier_teams",
+        "operationId": "find_team_member_by_identifier",
         "security": [
           {
             "bearerAuth": []
@@ -8309,7 +8221,7 @@
           "Team"
         ],
         "summary": "Update team member",
-        "operationId": "update_team_member_teams",
+        "operationId": "update_team_member",
         "security": [
           {
             "bearerAuth": []
@@ -8383,7 +8295,7 @@
           "Team"
         ],
         "summary": "Delete team member",
-        "operationId": "delete_team_member_teams",
+        "operationId": "delete_team_member",
         "security": [
           {
             "bearerAuth": []
@@ -8449,7 +8361,7 @@
           "Team"
         ],
         "summary": "Block team member",
-        "operationId": "block_team_member_teams",
+        "operationId": "block_team_member",
         "security": [
           {
             "bearerAuth": []
@@ -8515,7 +8427,7 @@
           "Team"
         ],
         "summary": "Unblock team member",
-        "operationId": "unblock_team_member_teams",
+        "operationId": "unblock_team_member",
         "security": [
           {
             "bearerAuth": []
@@ -8581,7 +8493,7 @@
           "Uploads"
         ],
         "summary": "Find all uploads",
-        "operationId": "find_all_uploads_upload",
+        "operationId": "find_all_uploads",
         "security": [
           {
             "bearerAuth": []
@@ -8638,7 +8550,7 @@
           "Uploads"
         ],
         "summary": "Create upload",
-        "operationId": "create_upload_upload",
+        "operationId": "create_upload",
         "security": [
           {
             "bearerAuth": []
@@ -8704,7 +8616,7 @@
           "Uploads"
         ],
         "summary": "Count uploads",
-        "operationId": "count_uploads_upload",
+        "operationId": "count_uploads",
         "security": [
           {
             "bearerAuth": []
@@ -8760,7 +8672,7 @@
           "Uploads"
         ],
         "summary": "Find starred uploads",
-        "operationId": "find_starred_uploads_upload",
+        "operationId": "find_starred_uploads",
         "security": [
           {
             "bearerAuth": []
@@ -8819,7 +8731,7 @@
           "Uploads"
         ],
         "summary": "Find upload by identifier",
-        "operationId": "find_upload_by_identifier_upload",
+        "operationId": "find_upload_by_identifier",
         "security": [
           {
             "bearerAuth": []
@@ -8883,7 +8795,7 @@
           "Uploads"
         ],
         "summary": "Update upload",
-        "operationId": "update_upload_upload",
+        "operationId": "update_upload",
         "security": [
           {
             "bearerAuth": []
@@ -8957,7 +8869,7 @@
           "Uploads"
         ],
         "summary": "Delete upload",
-        "operationId": "delete_upload_upload",
+        "operationId": "delete_upload",
         "security": [
           {
             "bearerAuth": []
@@ -9023,7 +8935,7 @@
           "Users"
         ],
         "summary": "Update profile picture",
-        "operationId": "update_profile_picture_user",
+        "operationId": "update_profile_picture",
         "security": [
           {
             "bearerAuth": []
@@ -9098,7 +9010,7 @@
           "Users"
         ],
         "summary": "Change password",
-        "operationId": "change_password_user",
+        "operationId": "change_password",
         "security": [
           {
             "bearerAuth": []
@@ -9164,7 +9076,7 @@
           "Users"
         ],
         "summary": "Request change password otp",
-        "operationId": "request_change_password_otp_user",
+        "operationId": "request_change_password_otp",
         "security": [
           {
             "bearerAuth": []
@@ -9220,7 +9132,7 @@
           "Users"
         ],
         "summary": "Retrieve information",
-        "operationId": "retrieve_information_user",
+        "operationId": "retrieve_information",
         "security": [
           {
             "bearerAuth": []
@@ -9274,7 +9186,7 @@
           "Users"
         ],
         "summary": "Update profile",
-        "operationId": "update_profile_user",
+        "operationId": "update_profile",
         "security": [
           {
             "bearerAuth": []
@@ -9340,7 +9252,7 @@
           "Users"
         ],
         "summary": "Toggle two factor",
-        "operationId": "toggle_two_factor_user",
+        "operationId": "toggle_two_factor",
         "security": [
           {
             "bearerAuth": []
@@ -9406,7 +9318,7 @@
           "Users"
         ],
         "summary": "Request two factor otp",
-        "operationId": "request_two_factor_otp_user",
+        "operationId": "request_two_factor_otp",
         "security": [
           {
             "bearerAuth": []
@@ -9462,7 +9374,7 @@
           "Authentication"
         ],
         "summary": "Verify account",
-        "operationId": "verify_account_auth",
+        "operationId": "verify_account",
         "security": [
           {
             "bearerAuth": []
@@ -9528,7 +9440,7 @@
           "Authentication"
         ],
         "summary": "Verify otp",
-        "operationId": "verify_otp_auth",
+        "operationId": "verify_otp",
         "security": [
           {
             "bearerAuth": []
@@ -9665,19 +9577,15 @@
         "type": "object",
         "properties": {
           "appName": {
-            "type": [
-              "string",
-              "null"
-            ]
+            "type": "string",
+            "nullable": true
           },
           "maintenanceMode": {
             "type": "boolean"
           },
           "supportEmail": {
-            "type": [
-              "string",
-              "null"
-            ]
+            "type": "string",
+            "nullable": true
           },
           "createdAt": {
             "type": "string",
@@ -9688,25 +9596,19 @@
             "format": "date-time"
           },
           "defaultCurrency": {
-            "type": [
-              "string",
-              "null"
-            ]
+            "type": "string",
+            "nullable": true
           },
           "defaultLanguage": {
-            "type": [
-              "string",
-              "null"
-            ]
+            "type": "string",
+            "nullable": true
           },
           "identifier": {
             "type": "string"
           },
           "logoUrl": {
-            "type": [
-              "string",
-              "null"
-            ]
+            "type": "string",
+            "nullable": true
           }
         },
         "required": [
@@ -9743,24 +9645,20 @@
             "type": "integer"
           },
           "product": {
-            "anyOf": [
+            "allOf": [
               {
                 "$ref": "#/components/schemas/ProductSummary"
-              },
-              {
-                "type": "null"
               }
-            ]
+            ],
+            "nullable": true
           },
           "price": {
-            "anyOf": [
+            "allOf": [
               {
                 "$ref": "#/components/schemas/ProductPriceResponse"
-              },
-              {
-                "type": "null"
               }
-            ]
+            ],
+            "nullable": true
           }
         },
         "required": [
@@ -9834,58 +9732,40 @@
         "type": "object",
         "properties": {
           "savedAddressIdentifier": {
-            "type": [
-              "string",
-              "null"
-            ]
+            "type": "string",
+            "nullable": true
           },
           "recipientName": {
-            "type": [
-              "string",
-              "null"
-            ]
+            "type": "string",
+            "nullable": true
           },
           "recipientPhone": {
-            "type": [
-              "string",
-              "null"
-            ]
+            "type": "string",
+            "nullable": true
           },
           "addressLineOne": {
-            "type": [
-              "string",
-              "null"
-            ]
+            "type": "string",
+            "nullable": true
           },
           "addressLineTwo": {
-            "type": [
-              "string",
-              "null"
-            ]
+            "type": "string",
+            "nullable": true
           },
           "localGovtArea": {
-            "type": [
-              "string",
-              "null"
-            ]
+            "type": "string",
+            "nullable": true
           },
           "cityOrTown": {
-            "type": [
-              "string",
-              "null"
-            ]
+            "type": "string",
+            "nullable": true
           },
           "state": {
-            "type": [
-              "string",
-              "null"
-            ]
+            "type": "string",
+            "nullable": true
           },
           "deliveryNotes": {
-            "type": [
-              "string",
-              "null"
-            ]
+            "type": "string",
+            "nullable": true
           },
           "saveToAddressBook": {
             "type": "boolean"
@@ -9930,11 +9810,9 @@
             "format": "date-time"
           },
           "updatedAt": {
-            "type": [
-              "string",
-              "null"
-            ],
-            "format": "date-time"
+            "type": "string",
+            "format": "date-time",
+            "nullable": true
           }
         },
         "required": [
@@ -9964,10 +9842,8 @@
             "type": "string"
           },
           "orderIdentifier": {
-            "type": [
-              "string",
-              "null"
-            ]
+            "type": "string",
+            "nullable": true
           },
           "subject": {
             "type": "string"
@@ -9976,32 +9852,26 @@
             "type": "string"
           },
           "status": {
-            "anyOf": [
+            "allOf": [
               {
                 "$ref": "#/components/schemas/ComplaintStatus"
-              },
-              {
-                "type": "null"
               }
-            ]
+            ],
+            "nullable": true
           },
           "createdAt": {
             "type": "string",
             "format": "date-time"
           },
           "updatedAt": {
-            "type": [
-              "string",
-              "null"
-            ],
-            "format": "date-time"
+            "type": "string",
+            "format": "date-time",
+            "nullable": true
           },
           "archivedAt": {
-            "type": [
-              "string",
-              "null"
-            ],
-            "format": "date-time"
+            "type": "string",
+            "format": "date-time",
+            "nullable": true
           }
         },
         "required": [
@@ -10083,10 +9953,8 @@
         "type": "object",
         "properties": {
           "orderIdentifier": {
-            "type": [
-              "string",
-              "null"
-            ]
+            "type": "string",
+            "nullable": true
           },
           "subject": {
             "type": "string"
@@ -10107,28 +9975,20 @@
             "type": "string"
           },
           "addressLineTwo": {
-            "type": [
-              "string",
-              "null"
-            ]
+            "type": "string",
+            "nullable": true
           },
           "localGovtArea": {
-            "type": [
-              "string",
-              "null"
-            ]
+            "type": "string",
+            "nullable": true
           },
           "cityOrTown": {
-            "type": [
-              "string",
-              "null"
-            ]
+            "type": "string",
+            "nullable": true
           },
           "state": {
-            "type": [
-              "string",
-              "null"
-            ]
+            "type": "string",
+            "nullable": true
           },
           "isPrimary": {
             "type": "boolean"
@@ -10174,37 +10034,27 @@
             "type": "string"
           },
           "firstName": {
-            "type": [
-              "string",
-              "null"
-            ]
+            "type": "string",
+            "nullable": true
           },
           "lastName": {
-            "type": [
-              "string",
-              "null"
-            ]
+            "type": "string",
+            "nullable": true
           },
           "phone": {
-            "type": [
-              "string",
-              "null"
-            ]
+            "type": "string",
+            "nullable": true
           },
           "recipientEmail": {
             "type": "string"
           },
           "tag": {
-            "type": [
-              "string",
-              "null"
-            ]
+            "type": "string",
+            "nullable": true
           },
           "hasAttachments": {
-            "type": [
-              "boolean",
-              "null"
-            ]
+            "type": "boolean",
+            "nullable": true
           },
           "data": {}
         },
@@ -10245,22 +10095,16 @@
             "type": "string"
           },
           "firstName": {
-            "type": [
-              "string",
-              "null"
-            ]
+            "type": "string",
+            "nullable": true
           },
           "lastName": {
-            "type": [
-              "string",
-              "null"
-            ]
+            "type": "string",
+            "nullable": true
           },
           "roleIdentifier": {
-            "type": [
-              "string",
-              "null"
-            ]
+            "type": "string",
+            "nullable": true
           }
         },
         "required": [
@@ -10288,28 +10132,20 @@
             "type": "string"
           },
           "addressLineTwo": {
-            "type": [
-              "string",
-              "null"
-            ]
+            "type": "string",
+            "nullable": true
           },
           "localGovtArea": {
-            "type": [
-              "string",
-              "null"
-            ]
+            "type": "string",
+            "nullable": true
           },
           "cityOrTown": {
-            "type": [
-              "string",
-              "null"
-            ]
+            "type": "string",
+            "nullable": true
           },
           "state": {
-            "type": [
-              "string",
-              "null"
-            ]
+            "type": "string",
+            "nullable": true
           }
         },
         "required": [
@@ -10330,10 +10166,8 @@
             "type": "string"
           },
           "category": {
-            "type": [
-              "string",
-              "null"
-            ]
+            "type": "string",
+            "nullable": true
           }
         },
         "required": [
@@ -10348,10 +10182,8 @@
             "type": "string"
           },
           "description": {
-            "type": [
-              "string",
-              "null"
-            ]
+            "type": "string",
+            "nullable": true
           }
         },
         "required": [
@@ -10380,16 +10212,12 @@
             "type": "string"
           },
           "fileType": {
-            "type": [
-              "string",
-              "null"
-            ]
+            "type": "string",
+            "nullable": true
           },
           "starred": {
-            "type": [
-              "boolean",
-              "null"
-            ]
+            "type": "boolean",
+            "nullable": true
           }
         },
         "required": [
@@ -10410,39 +10238,29 @@
             "type": "string"
           },
           "addressLineTwo": {
-            "type": [
-              "string",
-              "null"
-            ]
+            "type": "string",
+            "nullable": true
           },
           "localGovtArea": {
-            "type": [
-              "string",
-              "null"
-            ]
+            "type": "string",
+            "nullable": true
           },
           "cityOrTown": {
-            "type": [
-              "string",
-              "null"
-            ]
+            "type": "string",
+            "nullable": true
           },
           "state": {
-            "type": [
-              "string",
-              "null"
-            ]
+            "type": "string",
+            "nullable": true
           },
           "createdAt": {
             "type": "string",
             "format": "date-time"
           },
           "updatedAt": {
-            "type": [
-              "string",
-              "null"
-            ],
-            "format": "date-time"
+            "type": "string",
+            "format": "date-time",
+            "nullable": true
           },
           "isPrimary": {
             "type": "boolean"
@@ -10483,14 +10301,12 @@
         "type": "object",
         "properties": {
           "status": {
-            "anyOf": [
+            "allOf": [
               {
                 "$ref": "#/components/schemas/OrderStatus"
-              },
-              {
-                "type": "null"
               }
-            ]
+            ],
+            "nullable": true
           }
         }
       },
@@ -10510,16 +10326,12 @@
             "type": "string"
           },
           "phone": {
-            "type": [
-              "string",
-              "null"
-            ]
+            "type": "string",
+            "nullable": true
           },
           "picture": {
-            "type": [
-              "string",
-              "null"
-            ]
+            "type": "string",
+            "nullable": true
           },
           "addresses": {
             "type": "array",
@@ -10532,11 +10344,9 @@
             "format": "date-time"
           },
           "updatedAt": {
-            "type": [
-              "string",
-              "null"
-            ],
-            "format": "date-time"
+            "type": "string",
+            "format": "date-time",
+            "nullable": true
           },
           "blocked": {
             "type": "boolean"
@@ -10571,10 +10381,8 @@
         "type": "object",
         "properties": {
           "months": {
-            "type": [
-              "integer",
-              "null"
-            ]
+            "type": "integer",
+            "nullable": true
           }
         }
       },
@@ -10619,10 +10427,8 @@
             "type": "number"
           },
           "deltaPercent": {
-            "type": [
-              "number",
-              "null"
-            ]
+            "type": "number",
+            "nullable": true
           },
           "comparisonLabel": {
             "type": "string"
@@ -10660,34 +10466,24 @@
             "type": "string"
           },
           "addressLineTwo": {
-            "type": [
-              "string",
-              "null"
-            ]
+            "type": "string",
+            "nullable": true
           },
           "localGovtArea": {
-            "type": [
-              "string",
-              "null"
-            ]
+            "type": "string",
+            "nullable": true
           },
           "cityOrTown": {
-            "type": [
-              "string",
-              "null"
-            ]
+            "type": "string",
+            "nullable": true
           },
           "state": {
-            "type": [
-              "string",
-              "null"
-            ]
+            "type": "string",
+            "nullable": true
           },
           "deliveryNotes": {
-            "type": [
-              "string",
-              "null"
-            ]
+            "type": "string",
+            "nullable": true
           }
         },
         "required": [
@@ -10720,10 +10516,8 @@
             "format": "date-time"
           },
           "tag": {
-            "type": [
-              "string",
-              "null"
-            ]
+            "type": "string",
+            "nullable": true
           },
           "isRead": {
             "type": "boolean"
@@ -10736,39 +10530,29 @@
           },
           "data": {},
           "userIdentifier": {
-            "type": [
-              "string",
-              "null"
-            ]
+            "type": "string",
+            "nullable": true
           },
           "createdAt": {
             "type": "string",
             "format": "date-time"
           },
           "updatedAt": {
-            "type": [
-              "string",
-              "null"
-            ],
-            "format": "date-time"
+            "type": "string",
+            "format": "date-time",
+            "nullable": true
           },
           "firstName": {
-            "type": [
-              "string",
-              "null"
-            ]
+            "type": "string",
+            "nullable": true
           },
           "lastName": {
-            "type": [
-              "string",
-              "null"
-            ]
+            "type": "string",
+            "nullable": true
           },
           "phone": {
-            "type": [
-              "string",
-              "null"
-            ]
+            "type": "string",
+            "nullable": true
           }
         },
         "required": [
@@ -10841,24 +10625,20 @@
             "type": "integer"
           },
           "product": {
-            "anyOf": [
+            "allOf": [
               {
                 "$ref": "#/components/schemas/ProductSummary"
-              },
-              {
-                "type": "null"
               }
-            ]
+            ],
+            "nullable": true
           },
           "price": {
-            "anyOf": [
+            "allOf": [
               {
                 "$ref": "#/components/schemas/ProductPriceResponse"
-              },
-              {
-                "type": "null"
               }
-            ]
+            ],
+            "nullable": true
           }
         },
         "required": [
@@ -10876,14 +10656,12 @@
             "type": "string"
           },
           "status": {
-            "anyOf": [
+            "allOf": [
               {
                 "$ref": "#/components/schemas/InvitationStatus"
-              },
-              {
-                "type": "null"
               }
-            ]
+            ],
+            "nullable": true
           },
           "token": {
             "type": "string"
@@ -10893,35 +10671,25 @@
             "format": "date-time"
           },
           "updatedAt": {
-            "type": [
-              "string",
-              "null"
-            ],
-            "format": "date-time"
+            "type": "string",
+            "format": "date-time",
+            "nullable": true
           },
           "firstName": {
-            "type": [
-              "string",
-              "null"
-            ]
+            "type": "string",
+            "nullable": true
           },
           "lastName": {
-            "type": [
-              "string",
-              "null"
-            ]
+            "type": "string",
+            "nullable": true
           },
           "roleIdentifier": {
-            "type": [
-              "string",
-              "null"
-            ]
+            "type": "string",
+            "nullable": true
           },
           "invitedBy": {
-            "type": [
-              "string",
-              "null"
-            ]
+            "type": "string",
+            "nullable": true
           }
         },
         "required": [
@@ -10938,16 +10706,12 @@
             "type": "string"
           },
           "firstName": {
-            "type": [
-              "string",
-              "null"
-            ]
+            "type": "string",
+            "nullable": true
           },
           "lastName": {
-            "type": [
-              "string",
-              "null"
-            ]
+            "type": "string",
+            "nullable": true
           }
         },
         "required": [
@@ -10967,46 +10731,32 @@
         "type": "object",
         "properties": {
           "search": {
-            "type": [
-              "string",
-              "null"
-            ]
+            "type": "string",
+            "nullable": true
           },
           "tag": {
-            "type": [
-              "string",
-              "null"
-            ]
+            "type": "string",
+            "nullable": true
           },
           "isRead": {
-            "type": [
-              "boolean",
-              "null"
-            ]
+            "type": "boolean",
+            "nullable": true
           },
           "isStarred": {
-            "type": [
-              "boolean",
-              "null"
-            ]
+            "type": "boolean",
+            "nullable": true
           },
           "hasAttachments": {
-            "type": [
-              "boolean",
-              "null"
-            ]
+            "type": "boolean",
+            "nullable": true
           },
           "page": {
-            "type": [
-              "integer",
-              "null"
-            ]
+            "type": "integer",
+            "nullable": true
           },
           "pageSize": {
-            "type": [
-              "integer",
-              "null"
-            ]
+            "type": "integer",
+            "nullable": true
           }
         }
       },
@@ -11014,35 +10764,25 @@
         "type": "object",
         "properties": {
           "page": {
-            "type": [
-              "integer",
-              "null"
-            ]
+            "type": "integer",
+            "nullable": true
           },
           "pageSize": {
-            "type": [
-              "integer",
-              "null"
-            ]
+            "type": "integer",
+            "nullable": true
           },
           "eventType": {
-            "type": [
-              "string",
-              "null"
-            ]
+            "type": "string",
+            "nullable": true
           },
           "readState": {},
           "unreadOnly": {
-            "type": [
-              "boolean",
-              "null"
-            ]
+            "type": "boolean",
+            "nullable": true
           },
           "includeArchived": {
-            "type": [
-              "boolean",
-              "null"
-            ]
+            "type": "boolean",
+            "nullable": true
           }
         }
       },
@@ -11140,24 +10880,20 @@
             "type": "string"
           },
           "product": {
-            "anyOf": [
+            "allOf": [
               {
                 "$ref": "#/components/schemas/ProductSummary"
-              },
-              {
-                "type": "null"
               }
-            ]
+            ],
+            "nullable": true
           },
           "price": {
-            "anyOf": [
+            "allOf": [
               {
                 "$ref": "#/components/schemas/ProductPriceResponse"
-              },
-              {
-                "type": "null"
               }
-            ]
+            ],
+            "nullable": true
           },
           "inStock": {
             "type": "boolean"
@@ -11178,16 +10914,12 @@
             "type": "integer"
           },
           "search": {
-            "type": [
-              "string",
-              "null"
-            ]
+            "type": "string",
+            "nullable": true
           },
           "inStock": {
-            "type": [
-              "boolean",
-              "null"
-            ]
+            "type": "boolean",
+            "nullable": true
           },
           "sort": {
             "$ref": "#/components/schemas/MarketplaceSort"
@@ -11254,11 +10986,9 @@
             "format": "date-time"
           },
           "updatedAt": {
-            "type": [
-              "string",
-              "null"
-            ],
-            "format": "date-time"
+            "type": "string",
+            "format": "date-time",
+            "nullable": true
           }
         },
         "required": [
@@ -11295,43 +11025,33 @@
           },
           "metadata": {},
           "actorIdentifier": {
-            "type": [
-              "string",
-              "null"
-            ]
+            "type": "string",
+            "nullable": true
           },
           "actorType": {
             "$ref": "#/components/schemas/NotificationActorType"
           },
           "entityType": {
-            "type": [
-              "string",
-              "null"
-            ]
+            "type": "string",
+            "nullable": true
           },
           "entityIdentifier": {
-            "type": [
-              "string",
-              "null"
-            ]
+            "type": "string",
+            "nullable": true
           },
           "createdAt": {
             "type": "string",
             "format": "date-time"
           },
           "readAt": {
-            "type": [
-              "string",
-              "null"
-            ],
-            "format": "date-time"
+            "type": "string",
+            "format": "date-time",
+            "nullable": true
           },
           "archivedAt": {
-            "type": [
-              "string",
-              "null"
-            ],
-            "format": "date-time"
+            "type": "string",
+            "format": "date-time",
+            "nullable": true
           }
         },
         "required": [
@@ -11370,26 +11090,20 @@
         "type": "object",
         "properties": {
           "page": {
-            "type": [
-              "integer",
-              "null"
-            ]
+            "type": "integer",
+            "nullable": true
           },
           "pageSize": {
-            "type": [
-              "integer",
-              "null"
-            ]
+            "type": "integer",
+            "nullable": true
           },
           "status": {
-            "anyOf": [
+            "allOf": [
               {
                 "$ref": "#/components/schemas/OrderStatus"
-              },
-              {
-                "type": "null"
               }
-            ]
+            ],
+            "nullable": true
           }
         }
       },
@@ -11403,34 +11117,28 @@
             "type": "string"
           },
           "status": {
-            "anyOf": [
+            "allOf": [
               {
                 "$ref": "#/components/schemas/OrderStatus"
-              },
-              {
-                "type": "null"
               }
-            ]
+            ],
+            "nullable": true
           },
           "paymentReference": {
-            "type": [
-              "string",
-              "null"
-            ]
+            "type": "string",
+            "nullable": true
           },
           "createdAt": {
             "type": "string",
             "format": "date-time"
           },
           "delivery": {
-            "anyOf": [
+            "allOf": [
               {
                 "$ref": "#/components/schemas/DeliveryResponse"
-              },
-              {
-                "type": "null"
               }
-            ]
+            ],
+            "nullable": true
           },
           "items": {
             "type": "array",
@@ -11466,31 +11174,25 @@
             "type": "string"
           },
           "status": {
-            "anyOf": [
+            "allOf": [
               {
                 "$ref": "#/components/schemas/OrderStatus"
-              },
-              {
-                "type": "null"
               }
-            ]
+            ],
+            "nullable": true
           },
           "paymentReference": {
-            "type": [
-              "string",
-              "null"
-            ]
+            "type": "string",
+            "nullable": true
           },
           "createdAt": {
             "type": "string",
             "format": "date-time"
           },
           "updatedAt": {
-            "type": [
-              "string",
-              "null"
-            ],
-            "format": "date-time"
+            "type": "string",
+            "format": "date-time",
+            "nullable": true
           }
         },
         "required": [
@@ -11589,19 +11291,15 @@
             "type": "string"
           },
           "picture": {
-            "type": [
-              "string",
-              "null"
-            ]
+            "type": "string",
+            "nullable": true
           },
           "description": {
             "type": "string"
           },
           "category": {
-            "type": [
-              "string",
-              "null"
-            ]
+            "type": "string",
+            "nullable": true
           }
         },
         "required": [
@@ -11620,10 +11318,8 @@
             "type": "string"
           },
           "picture": {
-            "type": [
-              "string",
-              "null"
-            ]
+            "type": "string",
+            "nullable": true
           },
           "description": {
             "type": "string"
@@ -11633,17 +11329,13 @@
             "format": "date-time"
           },
           "updatedAt": {
-            "type": [
-              "string",
-              "null"
-            ],
-            "format": "date-time"
+            "type": "string",
+            "format": "date-time",
+            "nullable": true
           },
           "category": {
-            "type": [
-              "string",
-              "null"
-            ]
+            "type": "string",
+            "nullable": true
           }
         },
         "required": [
@@ -11783,11 +11475,9 @@
             "format": "date-time"
           },
           "updatedAt": {
-            "type": [
-              "string",
-              "null"
-            ],
-            "format": "date-time"
+            "type": "string",
+            "format": "date-time",
+            "nullable": true
           }
         },
         "required": [
@@ -11820,31 +11510,23 @@
             "type": "string"
           },
           "firstName": {
-            "type": [
-              "string",
-              "null"
-            ]
+            "type": "string",
+            "nullable": true
           },
           "lastName": {
-            "type": [
-              "string",
-              "null"
-            ]
+            "type": "string",
+            "nullable": true
           },
           "email": {
             "type": "string"
           },
           "profilePicture": {
-            "type": [
-              "string",
-              "null"
-            ]
+            "type": "string",
+            "nullable": true
           },
           "roleIdentifier": {
-            "type": [
-              "string",
-              "null"
-            ]
+            "type": "string",
+            "nullable": true
           },
           "blocked": {
             "type": "boolean"
@@ -11854,18 +11536,14 @@
             "format": "date-time"
           },
           "updatedAt": {
-            "type": [
-              "string",
-              "null"
-            ],
-            "format": "date-time"
+            "type": "string",
+            "format": "date-time",
+            "nullable": true
           },
           "lastLogin": {
-            "type": [
-              "string",
-              "null"
-            ],
-            "format": "date-time"
+            "type": "string",
+            "format": "date-time",
+            "nullable": true
           }
         },
         "required": [
@@ -11888,16 +11566,12 @@
             "type": "string"
           },
           "phone": {
-            "type": [
-              "string",
-              "null"
-            ]
+            "type": "string",
+            "nullable": true
           },
           "role": {
-            "type": [
-              "string",
-              "null"
-            ]
+            "type": "string",
+            "nullable": true
           },
           "blocked": {
             "type": "boolean"
@@ -11907,11 +11581,9 @@
             "format": "date-time"
           },
           "updatedAt": {
-            "type": [
-              "string",
-              "null"
-            ],
-            "format": "date-time"
+            "type": "string",
+            "format": "date-time",
+            "nullable": true
           }
         },
         "required": [
@@ -11945,40 +11617,28 @@
         "type": "object",
         "properties": {
           "appName": {
-            "type": [
-              "string",
-              "null"
-            ]
+            "type": "string",
+            "nullable": true
           },
           "supportEmail": {
-            "type": [
-              "string",
-              "null"
-            ]
+            "type": "string",
+            "nullable": true
           },
           "defaultCurrency": {
-            "type": [
-              "string",
-              "null"
-            ]
+            "type": "string",
+            "nullable": true
           },
           "defaultLanguage": {
-            "type": [
-              "string",
-              "null"
-            ]
+            "type": "string",
+            "nullable": true
           },
           "maintenanceMode": {
-            "type": [
-              "boolean",
-              "null"
-            ]
+            "type": "boolean",
+            "nullable": true
           },
           "logoUrl": {
-            "type": [
-              "string",
-              "null"
-            ]
+            "type": "string",
+            "nullable": true
           }
         }
       },
@@ -11997,14 +11657,12 @@
         "type": "object",
         "properties": {
           "status": {
-            "anyOf": [
+            "allOf": [
               {
                 "$ref": "#/components/schemas/ComplaintStatus"
-              },
-              {
-                "type": "null"
               }
-            ]
+            ],
+            "nullable": true
           }
         }
       },
@@ -12012,40 +11670,28 @@
         "type": "object",
         "properties": {
           "addressLineOne": {
-            "type": [
-              "string",
-              "null"
-            ]
+            "type": "string",
+            "nullable": true
           },
           "addressLineTwo": {
-            "type": [
-              "string",
-              "null"
-            ]
+            "type": "string",
+            "nullable": true
           },
           "localGovtArea": {
-            "type": [
-              "string",
-              "null"
-            ]
+            "type": "string",
+            "nullable": true
           },
           "cityOrTown": {
-            "type": [
-              "string",
-              "null"
-            ]
+            "type": "string",
+            "nullable": true
           },
           "state": {
-            "type": [
-              "string",
-              "null"
-            ]
+            "type": "string",
+            "nullable": true
           },
           "isPrimary": {
-            "type": [
-              "boolean",
-              "null"
-            ]
+            "type": "boolean",
+            "nullable": true
           }
         }
       },
@@ -12059,10 +11705,8 @@
             "type": "string"
           },
           "phone": {
-            "type": [
-              "string",
-              "null"
-            ]
+            "type": "string",
+            "nullable": true
           }
         },
         "required": [
@@ -12074,22 +11718,16 @@
         "type": "object",
         "properties": {
           "tag": {
-            "type": [
-              "string",
-              "null"
-            ]
+            "type": "string",
+            "nullable": true
           },
           "isRead": {
-            "type": [
-              "boolean",
-              "null"
-            ]
+            "type": "boolean",
+            "nullable": true
           },
           "isStarred": {
-            "type": [
-              "boolean",
-              "null"
-            ]
+            "type": "boolean",
+            "nullable": true
           }
         }
       },
@@ -12097,26 +11735,20 @@
         "type": "object",
         "properties": {
           "quantity": {
-            "type": [
-              "integer",
-              "null"
-            ]
+            "type": "integer",
+            "nullable": true
           },
           "priceIdentifier": {
-            "type": [
-              "string",
-              "null"
-            ]
+            "type": "string",
+            "nullable": true
           },
           "priceUpdate": {
-            "anyOf": [
+            "allOf": [
               {
                 "$ref": "#/components/schemas/PriceUpdate"
-              },
-              {
-                "type": "null"
               }
-            ]
+            ],
+            "nullable": true
           }
         }
       },
@@ -12138,16 +11770,12 @@
         "type": "object",
         "properties": {
           "isRead": {
-            "type": [
-              "boolean",
-              "null"
-            ]
+            "type": "boolean",
+            "nullable": true
           },
           "isArchived": {
-            "type": [
-              "boolean",
-              "null"
-            ]
+            "type": "boolean",
+            "nullable": true
           }
         }
       },
@@ -12155,20 +11783,16 @@
         "type": "object",
         "properties": {
           "status": {
-            "anyOf": [
+            "allOf": [
               {
                 "$ref": "#/components/schemas/OrderStatus"
-              },
-              {
-                "type": "null"
               }
-            ]
+            ],
+            "nullable": true
           },
           "paymentReference": {
-            "type": [
-              "string",
-              "null"
-            ]
+            "type": "string",
+            "nullable": true
           }
         }
       },
@@ -12182,10 +11806,8 @@
             "type": "string"
           },
           "username": {
-            "type": [
-              "string",
-              "null"
-            ]
+            "type": "string",
+            "nullable": true
           }
         },
         "required": [
@@ -12197,16 +11819,12 @@
         "type": "object",
         "properties": {
           "name": {
-            "type": [
-              "string",
-              "null"
-            ]
+            "type": "string",
+            "nullable": true
           },
           "description": {
-            "type": [
-              "string",
-              "null"
-            ]
+            "type": "string",
+            "nullable": true
           }
         }
       },
@@ -12214,28 +11832,20 @@
         "type": "object",
         "properties": {
           "name": {
-            "type": [
-              "string",
-              "null"
-            ]
+            "type": "string",
+            "nullable": true
           },
           "phone": {
-            "type": [
-              "string",
-              "null"
-            ]
+            "type": "string",
+            "nullable": true
           },
           "role": {
-            "type": [
-              "string",
-              "null"
-            ]
+            "type": "string",
+            "nullable": true
           },
           "blocked": {
-            "type": [
-              "boolean",
-              "null"
-            ]
+            "type": "boolean",
+            "nullable": true
           }
         }
       },
@@ -12243,16 +11853,12 @@
         "type": "object",
         "properties": {
           "name": {
-            "type": [
-              "string",
-              "null"
-            ]
+            "type": "string",
+            "nullable": true
           },
           "starred": {
-            "type": [
-              "boolean",
-              "null"
-            ]
+            "type": "boolean",
+            "nullable": true
           }
         }
       },
@@ -12269,10 +11875,8 @@
             "type": "string"
           },
           "fileSize": {
-            "type": [
-              "integer",
-              "null"
-            ]
+            "type": "integer",
+            "nullable": true
           },
           "starred": {
             "type": "boolean"
@@ -12282,21 +11886,17 @@
             "format": "date-time"
           },
           "updatedAt": {
-            "type": [
-              "string",
-              "null"
-            ],
-            "format": "date-time"
+            "type": "string",
+            "format": "date-time",
+            "nullable": true
           },
           "fileType": {
-            "anyOf": [
+            "allOf": [
               {
                 "$ref": "#/components/schemas/FileType"
-              },
-              {
-                "type": "null"
               }
-            ]
+            ],
+            "nullable": true
           },
           "filePath": {
             "type": "string"
@@ -12344,37 +11944,27 @@
             "type": "string"
           },
           "firstName": {
-            "type": [
-              "string",
-              "null"
-            ]
+            "type": "string",
+            "nullable": true
           },
           "lastName": {
-            "type": [
-              "string",
-              "null"
-            ]
+            "type": "string",
+            "nullable": true
           },
           "profilePicture": {
-            "type": [
-              "string",
-              "null"
-            ]
+            "type": "string",
+            "nullable": true
           },
           "username": {
-            "type": [
-              "string",
-              "null"
-            ]
+            "type": "string",
+            "nullable": true
           },
           "twoFactorEnabled": {
             "type": "boolean"
           },
           "roleIdentifier": {
-            "type": [
-              "string",
-              "null"
-            ]
+            "type": "string",
+            "nullable": true
           }
         },
         "required": [
@@ -12393,21 +11983,17 @@
             "type": "string"
           },
           "description": {
-            "type": [
-              "string",
-              "null"
-            ]
+            "type": "string",
+            "nullable": true
           },
           "createdAt": {
             "type": "string",
             "format": "date-time"
           },
           "updateAt": {
-            "type": [
-              "string",
-              "null"
-            ],
-            "format": "date-time"
+            "type": "string",
+            "format": "date-time",
+            "nullable": true
           },
           "isArchived": {
             "type": "boolean"
@@ -12458,14 +12044,12 @@
         ]
       },
       "VerifyOtpResponse": {
-        "oneOf": [
+        "allOf": [
           {
             "$ref": "#/components/schemas/LoginResult"
-          },
-          {
-            "type": "null"
           }
         ],
+        "nullable": true,
         "description": "Untagged, and the three unit variants are indistinguishable on the wire: they all serialize to `null`, so the binding can only say what the payload is, not which case produced it. Two of the three are `ts`-skipped so the union is `LoginResult | null` instead of repeating `null` once per variant."
       },
       "VerifyOtpVariant": {
