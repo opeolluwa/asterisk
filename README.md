@@ -1,6 +1,6 @@
 # asterisk
 
-A content management system and administrative platform for web applications.
+Everything you need to run an e-commerce application
 
 ## Stack
 
