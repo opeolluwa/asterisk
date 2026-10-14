@@ -1,110 +1,91 @@
-use std::{sync::OnceLock, time::Duration};
+use std::time::Duration;
 
-use bullmq::{Job, Worker, WorkerOptions, types::RemoveOnFinish};
+use asterisk_event_bus::{HandlerError, JobContext, QueueEngine};
 
-use crate::config::env::{AppConfig, Environment};
+use crate::config::env::AppConfig;
 use crate::errors::database_error::DatabaseError;
 use crate::errors::email_service_error::EmailServiceError;
 use crate::repositories::notification_deliveries_repository::{
     NotificationDeliveriesRepository, NotificationDeliveriesRepositoryExt,
 };
 use crate::services::mailer::{EmailContext, EmailSender, engine::EmailEngine};
-use crate::services::redis::{
-    CONNECT_ATTEMPTS, CONNECT_RETRY_DELAY, EMAIL_JOB_NAME, EMAIL_QUEUE_NAME, connection_options,
-    producer::EMAIL_JOB_ATTEMPTS,
-};
+
+/// How many times the bus will attempt the send-email job before giving up.
+///
+/// Kept in step with [`asterisk_event_bus::QueueConfig::default`], which is what
+/// the engine actually enforces; the handler needs the same number to know the
+/// final attempt.
+pub const EMAIL_JOB_ATTEMPTS: u32 = 5;
 
 /// Wall-clock ceiling for a single delivery attempt.
 ///
-/// The worker can only book a retry while it still owns the job's Redis lock,
-/// so this has to stay under [`EMAIL_JOB_LOCK_DURATION`].
+/// The bus can only book a retry while the handler is still running, so this has
+/// to stay under [`EMAIL_JOB_LOCK_DURATION`].
 pub const EMAIL_SEND_DEADLINE: Duration = Duration::from_secs(20);
 
-/// How long BullMQ holds a job's lock before the stalled check may reclaim it.
+/// How long the Redis driver holds a job's lock before the stalled check may
+/// reclaim it.
 ///
-/// A lock that expires mid-job is unrecoverable for that worker: the retry
-/// script is rejected with `Job lock does not exist` and the job is stranded in
-/// `active` with nobody left to book its next attempt. BullMQ defaults this to
-/// 30s, which a slow relay can outlay, so it is raised well past the worst-case
-/// delivery bounded by [`EMAIL_SEND_DEADLINE`].
-///
-/// Renewal runs on a `lock_duration / 2` ticker, so a 90s lock tolerates three
-/// consecutive missed renewals.
+/// A lock that expires mid-job is unrecoverable for that worker, so it is raised
+/// well past the worst-case delivery bounded by [`EMAIL_SEND_DEADLINE`]. This is
+/// only consulted by the Redis driver.
 pub const EMAIL_JOB_LOCK_DURATION: Duration = Duration::from_secs(90);
-
-/// BullMQ stops a worker as soon as it is dropped, so the long-lived worker has
-/// to outlive the task that starts it.
-static EMAIL_WORKER: OnceLock<Worker> = OnceLock::new();
 
 /// Starts the mail worker, closing the loop on `notification_deliveries`.
 ///
 /// Every job that carries a `notification_delivery_identifier` has its row moved
 /// to `sent` or `failed`, which is the only place a notification email's outcome
 /// is decided — the HTTP path that enqueued it never learns the result.
-pub async fn start_worker(config: AppConfig, deliveries: NotificationDeliveriesRepository) {
+pub async fn start_worker(
+    config: AppConfig,
+    engine: QueueEngine,
+    deliveries: NotificationDeliveriesRepository,
+) {
     let sender = match EmailEngine::from_config(&config) {
         Ok(sender) => sender,
         Err(err) => {
-            tracing::error!("{EMAIL_QUEUE_NAME} worker not started: {err}");
+            tracing::error!("send_email worker not started: {err}");
             return;
         }
     };
 
-    let options = WorkerOptions::default()
-        .connection(connection_options(&config))
-        .lock_duration(EMAIL_JOB_LOCK_DURATION)
-        // A single expired lock should cost the job one attempt, not the whole
-        // job: the default of 1 sends a recovered job straight to `failed`.
-        .max_stalled_count(2)
-        .remove_on_complete(RemoveOnFinish::Bool(matches!(
-            config.environment,
-            Environment::Production
-        )));
+    let event = config.events.send_email.clone();
+    let max_attempts = config.queue_config().max_attempts;
 
-    for attempt in 1..=CONNECT_ATTEMPTS {
-        let processor = sender.clone();
+    let handler = move |context: JobContext, payload: serde_json::Value| {
+        let sender = sender.clone();
         let deliveries = deliveries.clone();
 
-        let worker = Worker::with_options(
-            EMAIL_QUEUE_NAME,
-            move |job: Job, _token| {
-                let sender = processor.clone();
-                let deliveries = deliveries.clone();
-
-                async move { deliver(&sender, &deliveries, &job).await }
-            },
-            options.clone(),
-        )
-        .await;
-
-        match worker {
-            Ok(worker) => {
-                if EMAIL_WORKER.set(worker).is_err() {
-                    tracing::warn!("{EMAIL_QUEUE_NAME} worker already running");
-                } else {
-                    tracing::info!("{EMAIL_QUEUE_NAME} worker started");
-                }
-
-                return;
-            }
-            Err(err) => {
-                tracing::warn!(
-                    "failed to start {EMAIL_QUEUE_NAME} worker (attempt {attempt}/{CONNECT_ATTEMPTS}): {err}"
-                );
-                tokio::time::sleep(CONNECT_RETRY_DELAY).await;
-            }
+        async move {
+            deliver(
+                &sender,
+                &deliveries,
+                context,
+                payload,
+                max_attempts,
+                EMAIL_SEND_DEADLINE,
+            )
+            .await
         }
-    }
+    };
 
-    tracing::error!("{EMAIL_QUEUE_NAME} worker gave up connecting to redis");
+    if let Err(err) = engine.run(&[event], handler).await {
+        tracing::error!("send_email worker not started: {err}");
+    }
 }
 
-async fn deliver(
+async fn deliver<D>(
     sender: &EmailEngine,
-    deliveries: &NotificationDeliveriesRepository,
-    job: &Job,
-) -> Result<serde_json::Value, bullmq::Error> {
-    deliver_within(sender, deliveries, job, EMAIL_SEND_DEADLINE).await
+    deliveries: &D,
+    context: JobContext,
+    payload: serde_json::Value,
+    max_attempts: u32,
+    deadline: Duration,
+) -> Result<(), HandlerError>
+where
+    D: NotificationDeliveriesRepositoryExt + ?Sized,
+{
+    deliver_within(sender, deliveries, context, payload, max_attempts, deadline).await
 }
 
 /// Generic over the recorder so the delivery outcome can be asserted on without
@@ -112,17 +93,18 @@ async fn deliver(
 async fn deliver_within<D>(
     sender: &EmailEngine,
     deliveries: &D,
-    job: &Job,
+    context: JobContext,
+    payload: serde_json::Value,
+    max_attempts: u32,
     deadline: Duration,
-) -> Result<serde_json::Value, bullmq::Error>
+) -> Result<(), HandlerError>
 where
     D: NotificationDeliveriesRepositoryExt + ?Sized,
 {
-    let message: EmailContext = serde_json::from_value(job.data().clone()).map_err(|err| {
-        bullmq::Error::Unrecoverable(format!("invalid {EMAIL_JOB_NAME} job payload: {err}"))
-    })?;
+    let message: EmailContext = serde_json::from_value(payload)
+        .map_err(|err| HandlerError::Fatal(format!("invalid send_email job payload: {err}")))?;
 
-    tracing::info!("{EMAIL_QUEUE_NAME} job {} delivering mail", job.id());
+    tracing::info!("send_email job {} delivering mail", context.id);
 
     // Absent for every mail that is not a notification, so bookkeeping here has to
     // be conditional rather than assumed.
@@ -152,16 +134,16 @@ where
                 .await;
             }
 
-            Ok(serde_json::json!({ "sent": true }))
+            Ok(())
         }
         Err(err) => {
             // Only a closed-out job may report `failed`. Marking a retryable
-            // error here would tell the UI the mail is gone while BullMQ is
+            // error here would tell the UI the mail is gone while the bus is
             // still holding a job that may yet send it.
             let reason = err.to_string();
 
-            if (matches!(err, bullmq::Error::Unrecoverable(_))
-                || is_final_attempt(job.attempts_made()))
+            if (matches!(err, HandlerError::Fatal(_))
+                || is_final_attempt(context.attempt, max_attempts))
                 && let Some(identifier) = delivery.as_deref()
             {
                 report(
@@ -178,15 +160,14 @@ where
     }
 }
 
-/// Whether this try is the last one BullMQ will make, so the delivery row can be
-/// closed instead of left for a retry to overwrite.
+/// Whether this try is the last one the bus will make, so the delivery row can
+/// be closed instead of left for a retry to overwrite.
 ///
-/// Takes the attempt count rather than the job because that is all it reads, and
-/// `Job` has no way to construct one with a given counter.
-fn is_final_attempt(attempts_made: u32) -> bool {
+/// Takes the attempt count rather than the context because that is all it reads.
+fn is_final_attempt(attempts_made: u32, max_attempts: u32) -> bool {
     // `attempts_made` counts the tries already finished, so the attempt running
     // now is the next one up.
-    attempts_made.saturating_add(1) >= EMAIL_JOB_ATTEMPTS
+    attempts_made.saturating_add(1) >= max_attempts
 }
 
 /// Records the outcome of one delivery attempt.
@@ -212,34 +193,34 @@ async fn report<D: ?Sized>(
 ///
 /// Each provider bounds a single command round trip, so a server that accepts a
 /// connection and then stalls can consume several of those budgets back to back.
-/// Without an outer bound the send can outrun the job's Redis lock, and the
-/// worker loses the right to book a retry. Timing out here reports a retryable
-/// error while the lock is still held.
+/// Without an outer bound the send can outrun the job's lock, and the worker
+/// loses the right to book a retry. Timing out here reports a retryable error
+/// while the attempt is still live.
 async fn send_within(
     sender: &EmailEngine,
     message: EmailContext,
     deadline: Duration,
-) -> Result<(), bullmq::Error> {
+) -> Result<(), HandlerError> {
     let send = sender.send_email(message);
 
     match tokio::time::timeout(deadline, send).await {
         Ok(Ok(())) => Ok(()),
         Ok(Err(err)) => Err(classify(err)),
         // The provider outlived its budget, but the job itself is still sound.
-        Err(_) => Err(bullmq::Error::ProcessingError(format!(
+        Err(_) => Err(HandlerError::Retry(format!(
             "delivery exceeded its {deadline:?} budget"
         ))),
     }
 }
 
-fn classify(err: EmailServiceError) -> bullmq::Error {
+fn classify(err: EmailServiceError) -> HandlerError {
     match err {
         // A malformed address will not become valid, so retrying cannot help.
         EmailServiceError::OperationFailed(_) | EmailServiceError::ProviderError(_) => {
-            bullmq::Error::Unrecoverable(err.to_string())
+            HandlerError::Fatal(err.to_string())
         }
         EmailServiceError::SendEmailError | EmailServiceError::DeliveryError(_) => {
-            bullmq::Error::ProcessingError(err.to_string())
+            HandlerError::Retry(err.to_string())
         }
     }
 }
@@ -248,7 +229,7 @@ fn classify(err: EmailServiceError) -> bullmq::Error {
 mod tests {
     use std::net::SocketAddr;
 
-    use bullmq::Job;
+    use asterisk_event_bus::{HandlerError, JobContext, QueueConfig};
     use tokio::{net::TcpListener, task::JoinHandle};
 
     use super::*;
@@ -271,20 +252,28 @@ mod tests {
         }
     }
 
-    fn job_with(data: serde_json::Value) -> Job {
-        Job::new(EMAIL_JOB_NAME, data, None)
+    fn context(attempt: u32) -> JobContext {
+        JobContext {
+            id: "email-job-1".to_string(),
+            event: "send_email".to_string(),
+            attempt,
+        }
     }
 
-    fn message_job() -> Job {
-        job_with(serde_json::to_value(message()).expect("message serialises"))
+    fn payload(message: &EmailContext) -> serde_json::Value {
+        serde_json::to_value(message).expect("message serialises")
     }
 
-    /// A job whose payload is a notification email, so delivery bookkeeping runs.
-    fn notification_job(delivery_identifier: &str) -> Job {
+    fn message_payload() -> serde_json::Value {
+        payload(&message())
+    }
+
+    /// A payload that is a notification email, so delivery bookkeeping runs.
+    fn notification_payload(delivery_identifier: &str) -> serde_json::Value {
         let mut message = message();
         message.notification_delivery_identifier = Some(delivery_identifier.to_string());
 
-        job_with(serde_json::to_value(message).expect("message serialises"))
+        payload(&message)
     }
 
     /// Expects every attempt to be counted, and never a completion, unless the
@@ -317,7 +306,7 @@ mod tests {
 
     /// A relay that accepts the TCP connection and then says nothing, so
     /// lettre waits on the greeting. This is the shape of stall that used to
-    /// outlive the job's Redis lock.
+    /// outlive the job's lock.
     ///
     /// The accept loop has to stay non-blocking: `#[tokio::test]` runs on a
     /// single-threaded runtime, so a blocking `accept` would starve the very
@@ -353,7 +342,7 @@ mod tests {
         let addr = listener.local_addr().expect("has a local address");
 
         let handle = tokio::spawn(async move {
-            while let Ok((mut stream, _)) = listener.accept().await {
+            while let Ok((stream, _)) = listener.accept().await {
                 use tokio::io::{AsyncBufReadExt, AsyncWriteExt, BufReader};
 
                 let (reader, mut writer) = stream.into_split();
@@ -398,6 +387,13 @@ mod tests {
         (addr, handle)
     }
 
+    /// The attempt budget the handler enforces has to match the one the engine
+    /// actually retries, or a delivery is closed out on the wrong attempt.
+    #[test]
+    fn the_handler_attempt_budget_matches_the_engine_default() {
+        assert_eq!(EMAIL_JOB_ATTEMPTS, QueueConfig::default().max_attempts);
+    }
+
     /// The ordering that keeps a failure recordable. These budgets drifted
     /// together at 30s, which is what let a send outlive its own lock.
     ///
@@ -428,7 +424,9 @@ mod tests {
         let result = deliver_within(
             &sender,
             &recorder,
-            &message_job(),
+            context(0),
+            message_payload(),
+            EMAIL_JOB_ATTEMPTS,
             Duration::from_millis(200),
         )
         .await;
@@ -437,7 +435,7 @@ mod tests {
 
         // Retryable, not a hard failure: the job is sound, the relay is not.
         assert!(
-            matches!(result, Err(bullmq::Error::ProcessingError(_))),
+            matches!(result, Err(HandlerError::Retry(_))),
             "expected a retryable timeout, got {result:?}"
         );
     }
@@ -448,11 +446,18 @@ mod tests {
         let sender = smtp_engine("127.0.0.1", 1);
         let recorder = MockNotificationDeliveriesRepositoryExt::new();
 
-        let result =
-            deliver_within(&sender, &recorder, &message_job(), Duration::from_secs(5)).await;
+        let result = deliver_within(
+            &sender,
+            &recorder,
+            context(0),
+            message_payload(),
+            EMAIL_JOB_ATTEMPTS,
+            Duration::from_secs(5),
+        )
+        .await;
 
         assert!(
-            matches!(result, Err(bullmq::Error::ProcessingError(_))),
+            matches!(result, Err(HandlerError::Retry(_))),
             "expected a retryable transport failure, got {result:?}"
         );
     }
@@ -465,13 +470,15 @@ mod tests {
         let result = deliver_within(
             &sender,
             &recorder,
-            &job_with(serde_json::json!({})),
+            context(0),
+            serde_json::json!({}),
+            EMAIL_JOB_ATTEMPTS,
             Duration::from_secs(5),
         )
         .await;
 
         assert!(
-            matches!(result, Err(bullmq::Error::Unrecoverable(_))),
+            matches!(result, Err(HandlerError::Fatal(_))),
             "a malformed payload cannot be fixed by retrying, got {result:?}"
         );
     }
@@ -497,7 +504,9 @@ mod tests {
         let result = deliver_within(
             &sender,
             &recorder,
-            &notification_job("delivery-1"),
+            context(0),
+            notification_payload("delivery-1"),
+            EMAIL_JOB_ATTEMPTS,
             Duration::from_secs(10),
         )
         .await;
@@ -510,7 +519,7 @@ mod tests {
         );
     }
 
-    /// A retryable error is not the end of the story while BullMQ still holds the
+    /// A retryable error is not the end of the story while the bus still holds the
     /// job: marking the row `failed` here would tell the reader the mail is gone
     /// while a retry may still send it.
     #[tokio::test]
@@ -525,18 +534,20 @@ mod tests {
         let result = deliver_within(
             &sender,
             &recorder,
-            &notification_job("delivery-1"),
+            context(0),
+            notification_payload("delivery-1"),
+            EMAIL_JOB_ATTEMPTS,
             Duration::from_secs(5),
         )
         .await;
 
         assert!(
-            matches!(result, Err(bullmq::Error::ProcessingError(_))),
+            matches!(result, Err(HandlerError::Retry(_))),
             "expected a retryable transport failure, got {result:?}"
         );
     }
 
-    /// A delivery is only closed out on the attempt BullMQ will not repeat.
+    /// A delivery is only closed out on the attempt the bus will not repeat.
     ///
     /// The off-by-one is what keeps a delivery from being marked `failed` one
     /// retry early, or being left `pending` forever because the budget was never
@@ -545,7 +556,7 @@ mod tests {
     fn the_delivery_row_is_closed_on_the_last_attempt_only() {
         for finished in 0..EMAIL_JOB_ATTEMPTS - 1 {
             assert!(
-                !is_final_attempt(finished),
+                !is_final_attempt(finished, EMAIL_JOB_ATTEMPTS),
                 "attempt {next} of {EMAIL_JOB_ATTEMPTS} must stay open for a retry",
                 next = finished + 1
             );
@@ -553,7 +564,7 @@ mod tests {
 
         // Four tries already spent, so this is the fifth and last.
         assert!(
-            is_final_attempt(EMAIL_JOB_ATTEMPTS - 1),
+            is_final_attempt(EMAIL_JOB_ATTEMPTS - 1, EMAIL_JOB_ATTEMPTS),
             "the last attempt must close the row"
         );
     }
@@ -576,7 +587,9 @@ mod tests {
         let result = deliver_within(
             &sender,
             &recorder,
-            &notification_job("delivery-1"),
+            context(0),
+            notification_payload("delivery-1"),
+            EMAIL_JOB_ATTEMPTS,
             Duration::from_secs(10),
         )
         .await;
@@ -584,5 +597,12 @@ mod tests {
         relay.abort();
 
         assert!(result.is_ok(), "the mail sent, so the job must not fail");
+    }
+
+    /// Keeps the timing helper honest: `counting_recorder` is only useful while
+    /// the mock it builds still satisfies the repository bound.
+    #[allow(dead_code)]
+    fn _counting_recorder_compiles() -> MockNotificationDeliveriesRepositoryExt {
+        counting_recorder(std::sync::Arc::new(std::sync::atomic::AtomicUsize::new(0)))
     }
 }

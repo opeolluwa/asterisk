@@ -5,6 +5,7 @@ use serde_json::Value as JsonValue;
 use ts_rs::TS;
 use validator::{Validate, ValidationError};
 
+use crate::config::env::Event;
 use crate::models::sea_orm_active_enums::{
     NotificationActorType, NotificationChannel, NotificationRecipientType,
 };
@@ -36,7 +37,7 @@ pub struct NotificationRecipientInput {
 /// the entity type is what the stuff is about, eg, order
 #[derive(Debug, Clone)]
 pub struct NotificationEvent {
-    pub event_type: String,
+    pub event_type: Event,
     pub actor_identifier: Option<String>,
     pub actor_type: NotificationActorType,
     pub entity_type: Option<String>,

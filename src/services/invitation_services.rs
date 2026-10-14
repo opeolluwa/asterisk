@@ -2,6 +2,7 @@ use chrono::Duration;
 use heck::ToTitleCase;
 
 use crate::{
+    config::env::Event,
     dto::claims::{Claims, EntityKind, TokenType},
     errors::service_error::ServiceError,
     extractors::{invitation::CreateInvitationRequest, notifications::NotificationEvent},
@@ -205,7 +206,7 @@ impl<
         emit_to_active_admins(
             &self.emitter,
             NotificationEvent {
-                event_type: "invitation_created".to_string(),
+                event_type: Event::InvitationCreated,
                 actor_identifier: invited_by.map(str::to_string),
                 actor_type: NotificationActorType::Admin,
                 entity_type: Some("invitation".to_string()),
@@ -291,7 +292,7 @@ impl<
         emit_to_active_admins(
             &self.emitter,
             NotificationEvent {
-                event_type: "invitation_accepted".to_string(),
+                event_type: Event::InvitationAccepted,
                 actor_identifier: Some(actor_identifier.to_string()),
                 actor_type: NotificationActorType::Admin,
                 entity_type: Some("invitation".to_string()),

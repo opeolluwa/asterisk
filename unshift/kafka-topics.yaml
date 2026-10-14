@@ -1,0 +1,31 @@
+topics:
+  - name: complaint_created
+    partitions: 1
+    replication_factor: 1
+  - name: complaint_replied
+    partitions: 1
+    replication_factor: 1
+  - name: inventory_low_stock
+    partitions: 1
+    replication_factor: 1
+  - name: invitation_accepted
+    partitions: 1
+    replication_factor: 1
+  - name: invitation_created
+    partitions: 1
+    replication_factor: 1
+  - name: order_created
+    partitions: 1
+    replication_factor: 1
+  - name: order_resolved
+    partitions: 1
+    replication_factor: 1
+  - name: order_status_changed
+    partitions: 1
+    replication_factor: 1
+  - name: payment_confirmed
+    partitions: 1
+    replication_factor: 1
+  - name: send_email
+    partitions: 1
+    replication_factor: 1

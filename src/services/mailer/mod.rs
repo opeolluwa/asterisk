@@ -5,6 +5,7 @@ pub mod queued;
 pub mod sanitize;
 pub mod smtp;
 pub mod templates;
+pub mod worker;
 
 use serde::{Deserialize, Serialize};
 

@@ -18,7 +18,7 @@ use lib_asterisk::middlewares::csrf::CsrfLayer;
 use lib_asterisk::repositories::base::Repository;
 use lib_asterisk::repositories::notification_deliveries_repository::NotificationDeliveriesRepository;
 use lib_asterisk::routes::router::load_routes as load_http_routes;
-use lib_asterisk::services::{mailer::health, redis::worker};
+use lib_asterisk::services::mailer::{self, health};
 use lib_asterisk::state::AppState;
 use tower_http::{limit::RequestBodyLimitLayer, timeout::TimeoutLayer};
 
@@ -72,6 +72,7 @@ async fn main() -> Result<(), AppError> {
 
     let db_conn = init_db_pool(&app_config).await?;
     let app_state = AppState::new(&db_conn).await?;
+    let worker_state = app_state.clone();
     let http_routes = load_http_routes(app_state);
     let app = Router::new()
         .merge(http_routes)
@@ -140,8 +141,9 @@ async fn main() -> Result<(), AppError> {
     let listener = tokio::net::TcpListener::bind(ip_address).await?;
 
     // Spawn background task runner
-    tokio::spawn(worker::start_worker(
-        app_config.clone(),
+    tokio::spawn(mailer::worker::start_worker(
+        worker_state.app_config.clone(),
+        worker_state.queue.clone(),
         NotificationDeliveriesRepository::init(&db_conn),
     ));
 

@@ -1,4 +1,5 @@
 use crate::{
+    config::env::Event,
     errors::service_error::ServiceError,
     extractors::complaint::{
         CreateComplaintRequest, ReplyComplaintRequest, UpdateComplaintRequest,
@@ -149,7 +150,7 @@ where
         emit_to_active_admins(
             &self.emitter,
             NotificationEvent {
-                event_type: "complaint_created".to_string(),
+                event_type: Event::ComplaintCreated,
                 actor_identifier: Some(customer_identifier.to_string()),
                 actor_type: NotificationActorType::Customer,
                 entity_type: Some("complaint".to_string()),
@@ -388,7 +389,7 @@ where
             emit_to_recipients(
                 &self.emitter,
                 NotificationEvent {
-                    event_type: "complaint_replied".to_string(),
+                    event_type: Event::ComplaintReplied,
                     actor_identifier: Some(actor_identifier.to_string()),
                     actor_type: NotificationActorType::Admin,
                     entity_type: Some("complaint".to_string()),
@@ -428,7 +429,7 @@ where
         emit_to_active_admins_except(
             &self.emitter,
             NotificationEvent {
-                event_type: "complaint_replied".to_string(),
+                event_type: Event::ComplaintReplied,
                 actor_identifier: Some(actor_identifier.to_string()),
                 actor_type: NotificationActorType::Admin,
                 entity_type: Some("complaint".to_string()),
@@ -488,7 +489,7 @@ mod tests {
             Ok(EmittedNotification {
                 notification: crate::models::notifications::Model {
                     identifier: "notification-1".to_string(),
-                    event_type: event.event_type.clone(),
+                    event_type: event.event_type.to_string(),
                     actor_identifier: event.actor_identifier.clone(),
                     actor_type: event.actor_type.clone(),
                     entity_type: event.entity_type.clone(),
@@ -778,7 +779,7 @@ mod tests {
             Ok(EmittedNotification {
                 notification: crate::models::notifications::Model {
                     identifier: "notification-1".to_string(),
-                    event_type: event.event_type.clone(),
+                    event_type: event.event_type.to_string(),
                     actor_identifier: event.actor_identifier.clone(),
                     actor_type: event.actor_type.clone(),
                     entity_type: event.entity_type.clone(),
@@ -827,7 +828,7 @@ mod tests {
             .find(|event| !event.recipients.is_empty())
             .expect("the customer should have been notified");
 
-        assert_eq!(customer_event.event_type, "complaint_replied");
+        assert_eq!(customer_event.event_type, Event::ComplaintReplied);
         // The admin is the actor on a notification the customer reads; that is
         // what tells the two apart in the customer's list.
         assert_eq!(customer_event.actor_type, NotificationActorType::Admin);

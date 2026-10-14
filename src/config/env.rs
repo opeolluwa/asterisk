@@ -1,6 +1,7 @@
 use std::{str::FromStr, time::Duration};
 
-use secrecy::SecretString;
+use asterisk_event_bus::{QueueConfig, QueueDriver};
+use secrecy::{ExposeSecret, SecretString};
 use serde::{Deserialize, Serialize};
 
 use crate::{errors::app_error::AppError, utils::extract_env::extract_env};
@@ -103,6 +104,152 @@ pub struct AppConfig {
     // Console
     #[serde(default = "default_console_url")]
     pub console_url: String,
+
+    // Event bus
+    #[serde(default)]
+    pub queue_driver: QueueDriver,
+    #[serde(default = "default_kafka_brokers")]
+    pub kafka_brokers: String,
+    #[serde(default = "default_kafka_consumer_group")]
+    pub kafka_consumer_group: String,
+
+    pub events: Events,
+}
+
+/// The events the application can raise, as types rather than loose strings.
+///
+/// The canonical name of each variant is what the domain stores and matches on;
+/// the queue or topic it travels over is resolved separately through [`Events`],
+/// so transport naming can change without touching a single call site.
+#[derive(Debug, Clone, Copy, PartialEq, Eq, Hash)]
+pub enum Event {
+    SendEmail,
+    OrderCreated,
+    OrderStatusChanged,
+    OrderResolved,
+    PaymentConfirmed,
+    ComplaintCreated,
+    ComplaintReplied,
+    InventoryLowStock,
+    InvitationCreated,
+    InvitationAccepted,
+}
+
+impl Event {
+    /// Every event the application knows about.
+    pub const ALL: [Event; 10] = [
+        Event::SendEmail,
+        Event::OrderCreated,
+        Event::OrderStatusChanged,
+        Event::OrderResolved,
+        Event::PaymentConfirmed,
+        Event::ComplaintCreated,
+        Event::ComplaintReplied,
+        Event::InventoryLowStock,
+        Event::InvitationCreated,
+        Event::InvitationAccepted,
+    ];
+
+    /// The canonical, stable name of the event.
+    pub const fn as_str(&self) -> &'static str {
+        match self {
+            Event::SendEmail => "send_email",
+            Event::OrderCreated => "order_created",
+            Event::OrderStatusChanged => "order_status_changed",
+            Event::OrderResolved => "order_resolved",
+            Event::PaymentConfirmed => "payment_confirmed",
+            Event::ComplaintCreated => "complaint_created",
+            Event::ComplaintReplied => "complaint_replied",
+            Event::InventoryLowStock => "inventory_low_stock",
+            Event::InvitationCreated => "invitation_created",
+            Event::InvitationAccepted => "invitation_accepted",
+        }
+    }
+}
+
+impl std::fmt::Display for Event {
+    fn fmt(&self, f: &mut std::fmt::Formatter<'_>) -> std::fmt::Result {
+        f.write_str(self.as_str())
+    }
+}
+
+impl FromStr for Event {
+    type Err = String;
+
+    fn from_str(value: &str) -> Result<Self, Self::Err> {
+        Event::ALL
+            .into_iter()
+            .find(|event| event.as_str() == value)
+            .ok_or_else(|| format!("unknown event: {value}"))
+    }
+}
+
+/// The transport name of each event, resolvable per deployment.
+///
+/// Defaults to the canonical [`Event`] name so an app that sets nothing still
+/// routes every event correctly; an `EVENT_*` override renames the queue or
+/// topic without changing the code that raises or handles it.
+#[derive(Debug, Clone, Deserialize)]
+pub struct Events {
+    pub send_email: String,
+    pub order_created: String,
+    pub order_status_changed: String,
+    pub order_resolved: String,
+    pub payment_confirmed: String,
+    pub complaint_created: String,
+    pub complaint_replied: String,
+    pub inventory_low_stock: String,
+    pub invitation_created: String,
+    pub invitation_accepted: String,
+}
+
+impl Events {
+    /// The transport name for `event`.
+    pub fn name(&self, event: Event) -> &str {
+        match event {
+            Event::SendEmail => &self.send_email,
+            Event::OrderCreated => &self.order_created,
+            Event::OrderStatusChanged => &self.order_status_changed,
+            Event::OrderResolved => &self.order_resolved,
+            Event::PaymentConfirmed => &self.payment_confirmed,
+            Event::ComplaintCreated => &self.complaint_created,
+            Event::ComplaintReplied => &self.complaint_replied,
+            Event::InventoryLowStock => &self.inventory_low_stock,
+            Event::InvitationCreated => &self.invitation_created,
+            Event::InvitationAccepted => &self.invitation_accepted,
+        }
+    }
+
+    /// Every transport name, in [`Event::ALL`] order.
+    pub fn all(&self) -> Vec<&str> {
+        Event::ALL
+            .into_iter()
+            .map(|event| self.name(event))
+            .collect()
+    }
+
+    fn from_env() -> Self {
+        Self {
+            send_email: event_name("EVENT_SEND_EMAIL", Event::SendEmail),
+            order_created: event_name("EVENT_ORDER_CREATED", Event::OrderCreated),
+            order_status_changed: event_name(
+                "EVENT_ORDER_STATUS_CHANGED",
+                Event::OrderStatusChanged,
+            ),
+            order_resolved: event_name("EVENT_ORDER_RESOLVED", Event::OrderResolved),
+            payment_confirmed: event_name("EVENT_PAYMENT_CONFIRMED", Event::PaymentConfirmed),
+            complaint_created: event_name("EVENT_COMPLAINT_CREATED", Event::ComplaintCreated),
+            complaint_replied: event_name("EVENT_COMPLAINT_REPLIED", Event::ComplaintReplied),
+            inventory_low_stock: event_name("EVENT_INVENTORY_LOW_STOCK", Event::InventoryLowStock),
+            invitation_created: event_name("EVENT_INVITATION_CREATED", Event::InvitationCreated),
+            invitation_accepted: event_name("EVENT_INVITATION_ACCEPTED", Event::InvitationAccepted),
+        }
+    }
+}
+
+/// Resolves an event's transport name, defaulting to its canonical name.
+fn event_name(key: &str, event: Event) -> String {
+    extract_env::<String>(key).unwrap_or_else(|_| event.as_str().to_string())
 }
 
 impl AppConfig {
@@ -258,7 +405,28 @@ impl AppConfig {
 
             // Console
             console_url: extract_env("CONSOLE_URL").unwrap_or_else(|_| default_console_url()),
+
+            // Event bus
+            queue_driver: extract_env("QUEUE_DRIVER").unwrap_or_default(),
+            kafka_brokers: extract_env("KAFKA_BROKERS").unwrap_or_else(|_| default_kafka_brokers()),
+            kafka_consumer_group: extract_env("KAFKA_CONSUMER_GROUP")
+                .unwrap_or_else(|_| default_kafka_consumer_group()),
+            events: Events::from_env(),
         })
+    }
+
+    /// Everything the event bus needs to reach its broker.
+    ///
+    /// The bus is a standalone crate, so it cannot read [`AppConfig`] itself and
+    /// is handed a plain [`QueueConfig`] instead.
+    pub fn queue_config(&self) -> QueueConfig {
+        QueueConfig {
+            driver: self.queue_driver,
+            redis_url: self.redis_url.expose_secret().to_owned(),
+            kafka_brokers: self.kafka_brokers.clone(),
+            consumer_group: self.kafka_consumer_group.clone(),
+            ..QueueConfig::default()
+        }
     }
 
     pub fn current_env() -> Environment {
@@ -492,4 +660,12 @@ fn default_console_url() -> String {
         Environment::Production => "https://backoffice-rho-ten.vercel.app/".into(),
         Environment::Development | Environment::Test => "http://localhost:5600".into(),
     }
+}
+
+fn default_kafka_brokers() -> String {
+    "127.0.0.1:9092".to_string()
+}
+
+fn default_kafka_consumer_group() -> String {
+    "asterisk-events".to_string()
 }
