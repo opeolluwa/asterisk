@@ -149,7 +149,7 @@ impl NotificationsRepositoryExt for NotificationsRepository {
 
         let notification = notifications::ActiveModel {
             identifier: Set(Ulid::new().to_string()),
-            event_type: Set(event.event_type.clone()),
+            event_type: Set(event.event_type.to_string()),
             actor_identifier: Set(event.actor_identifier.clone()),
             actor_type: Set(event.actor_type.clone()),
             entity_type: Set(event.entity_type.clone()),
@@ -188,7 +188,7 @@ impl NotificationsRepositoryExt for NotificationsRepository {
             audience.push(recipient);
         }
 
-        let disabled = disabled_channels(&txn, &audience, &event.event_type).await?;
+        let disabled = disabled_channels(&txn, &audience, event.event_type.as_str()).await?;
 
         let mut recipient_rows = Vec::with_capacity(audience.len());
         let mut delivery_rows = Vec::new();
@@ -223,7 +223,7 @@ impl NotificationsRepositoryExt for NotificationsRepository {
             // no client in this service yet — a row nothing can ever move off
             // `pending` would be worse than no row at all.
             if muted.contains(&NotificationChannel::Email)
-                || email_suppressed_for(&event.event_type)
+                || email_suppressed_for(event.event_type.as_str())
             {
                 continue;
             }

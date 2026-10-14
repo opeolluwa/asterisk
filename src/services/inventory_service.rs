@@ -1,3 +1,4 @@
+use crate::config::env::Event;
 use crate::errors::service_error::ServiceError;
 use crate::extractors::inventory::{CreateInventoryRequest, UpdateInventoryRequest};
 use crate::extractors::notifications::NotificationEvent;
@@ -187,7 +188,7 @@ impl<R: InventoryRepositoryExt + Send + Sync, N: NotificationEmitter + Send + Sy
             emit_to_active_admins(
                 &self.emitter,
                 NotificationEvent {
-                    event_type: "inventory_low_stock".to_string(),
+                    event_type: Event::InventoryLowStock,
                     actor_identifier: Some(actor_identifier.to_string()),
                     actor_type: NotificationActorType::Admin,
                     entity_type: Some("inventory".to_string()),

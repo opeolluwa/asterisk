@@ -1,3 +1,4 @@
+use crate::config::env::Event;
 use crate::errors::database_error::DatabaseError;
 use crate::errors::service_error::ServiceError;
 use crate::extractors::customer_address::CreateCustomerAddressRequest;
@@ -270,7 +271,7 @@ impl<
                 emit_to_active_admins(
                     &self.emitter,
                     NotificationEvent {
-                        event_type: "order_status_changed".to_string(),
+                        event_type: Event::OrderStatusChanged,
                         actor_identifier: Some(actor_identifier.to_string()),
                         actor_type: NotificationActorType::Admin,
                         entity_type: Some("order".to_string()),
@@ -304,7 +305,7 @@ impl<
                     emit_to_active_admins(
                         &self.emitter,
                         NotificationEvent {
-                            event_type: "order_resolved".to_string(),
+                            event_type: Event::OrderResolved,
                             actor_identifier: Some(actor_identifier.to_string()),
                             actor_type: NotificationActorType::Admin,
                             entity_type: Some("order".to_string()),
@@ -470,7 +471,7 @@ impl<
             emit_to_active_admins(
                 &self.emitter,
                 NotificationEvent {
-                    event_type: "order_created".to_string(),
+                    event_type: Event::OrderCreated,
                     actor_identifier: Some(customer_identifier.to_string()),
                     actor_type: NotificationActorType::Customer,
                     entity_type: Some("order".to_string()),
@@ -629,7 +630,7 @@ impl<
         emit_to_active_admins(
             &self.emitter,
             NotificationEvent {
-                event_type: "payment_confirmed".to_string(),
+                event_type: Event::PaymentConfirmed,
                 actor_identifier: None,
                 actor_type: NotificationActorType::System,
                 entity_type: Some("order".to_string()),

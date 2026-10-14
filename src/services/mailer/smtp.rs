@@ -16,7 +16,7 @@ use crate::{config::env::SmtpTlsMode, errors::email_service_error::EmailServiceE
 /// Bounds a single SMTP command round trip, covering connection setup.
 ///
 /// This is deliberately well under
-/// [`EMAIL_SEND_DEADLINE`](crate::services::redis::worker::EMAIL_SEND_DEADLINE),
+/// [`EMAIL_SEND_DEADLINE`](crate::services::mailer::worker::EMAIL_SEND_DEADLINE),
 /// which in turn is under the queue's job lock duration: a job that overruns
 /// its lock cannot record a retry and gets stranded as stalled.
 pub const DEFAULT_SEND_TIMEOUT: Duration = Duration::from_secs(15);

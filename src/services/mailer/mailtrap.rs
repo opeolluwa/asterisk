@@ -10,9 +10,9 @@ use crate::errors::email_service_error::EmailServiceError;
 /// Bounds a single API round trip.
 ///
 /// Mirrors the SMTP command budget and, for the same reason, stays under
-/// [`EMAIL_SEND_DEADLINE`](crate::services::redis::worker::EMAIL_SEND_DEADLINE)
-/// so a hung provider is reported as a retryable failure while the job's Redis
-/// lock is still held.
+/// [`EMAIL_SEND_DEADLINE`](crate::services::mailer::worker::EMAIL_SEND_DEADLINE)
+/// so a hung provider is reported as a retryable failure while the job's lock
+/// is still held.
 pub const DEFAULT_SEND_TIMEOUT: Duration = Duration::from_secs(15);
 
 /// The request body accepted by Mailtrap's `POST /api/send` endpoint.

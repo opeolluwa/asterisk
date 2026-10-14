@@ -1,31 +1,29 @@
-use bullmq::{
-    Queue,
-    types::{BackoffStrategy, RemoveOnFinish},
-};
+use asterisk_event_bus::QueueEngine;
 
 use super::{EmailContext, EmailSender, SenderIdentity};
-use crate::{
-    errors::email_service_error::EmailServiceError,
-    services::redis::{
-        EMAIL_JOB_NAME,
-        producer::{EMAIL_JOB_ATTEMPTS, EMAIL_JOB_BACKOFF_MILLIS},
-    },
-};
+use crate::errors::email_service_error::EmailServiceError;
 
-/// Hands emails to the queue instead of delivering them inline.
+/// Hands emails to the event bus instead of delivering them inline.
 ///
-/// The `send-email` worker is what actually talks to the provider, so a slow or
+/// The `send_email` worker is what actually talks to the provider, so a slow or
 /// briefly unreachable server no longer blocks the request that triggered the
 /// mail.
 #[derive(Clone)]
 pub struct QueuedEmailSender {
-    queue: Queue,
+    queue: QueueEngine,
+    /// The transport name of the send-email event, so the destination stays a
+    /// deployment concern rather than a constant buried in this type.
+    event: String,
     identity: SenderIdentity,
 }
 
 impl QueuedEmailSender {
-    pub fn new(queue: Queue, identity: SenderIdentity) -> Self {
-        Self { queue, identity }
+    pub fn new(queue: QueueEngine, event: String, identity: SenderIdentity) -> Self {
+        Self {
+            queue,
+            event,
+            identity,
+        }
     }
 }
 
@@ -42,12 +40,8 @@ impl EmailSender for QueuedEmailSender {
         message.from_name = self.identity.name.clone();
 
         self.queue
-            .add(EMAIL_JOB_NAME, message)
-            .attempts(EMAIL_JOB_ATTEMPTS)
-            .backoff(BackoffStrategy::Exponential(EMAIL_JOB_BACKOFF_MILLIS))
-            .remove_on_complete(RemoveOnFinish::Bool(true))
+            .publish(&self.event, &message)
             .await
-            .map(|_| ())
             .map_err(|err| {
                 EmailServiceError::OperationFailed(format!("failed to enqueue email: {err}"))
             })

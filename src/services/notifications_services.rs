@@ -66,7 +66,7 @@ where
         return;
     }
 
-    let event_type = event.event_type.clone();
+    let event_type = event.event_type;
 
     if let Err(err) = emitter.emit(&event).await {
         tracing::error!(event_type = %event_type, "failed to emit notification: {err}");
@@ -95,7 +95,7 @@ pub async fn emit_to_active_admins_except<N>(
 ) where
     N: NotificationEmitter + ?Sized,
 {
-    let event_type = event.event_type.clone();
+    let event_type = event.event_type;
 
     let recipients = match emitter.active_admin_recipients().await {
         Ok(recipients) => recipients
@@ -446,6 +446,7 @@ where
 #[cfg(test)]
 mod tests {
     use super::*;
+    use crate::config::env::Event;
     use crate::errors::service_error::ServiceError;
     use crate::models::notifications;
     use crate::models::sea_orm_active_enums::NotificationActorType;
@@ -453,7 +454,7 @@ mod tests {
 
     fn event() -> NotificationEvent {
         NotificationEvent {
-            event_type: "order_created".to_string(),
+            event_type: Event::OrderCreated,
             actor_identifier: Some("customer-1".to_string()),
             actor_type: NotificationActorType::Customer,
             entity_type: Some("order".to_string()),
@@ -528,7 +529,7 @@ mod tests {
             .returning(|| Ok(vec![recipient()]));
 
         emitter.expect_emit().times(1).returning(|event| {
-            assert_eq!(event.event_type, "order_created");
+            assert_eq!(event.event_type, Event::OrderCreated);
             assert_eq!(event.recipients.len(), 1);
             assert_eq!(event.recipients[0].recipient_identifier, "admin-1");
             assert_eq!(event.title, "New order");

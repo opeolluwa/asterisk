@@ -13,6 +13,7 @@
 mod common;
 use common::{db, exec_sql, ulid};
 
+use lib_asterisk::config::env::Event;
 use lib_asterisk::extractors::notifications::{NotificationEvent, NotificationRecipientInput};
 use lib_asterisk::models::sea_orm_active_enums::{
     NotificationActorType, NotificationChannel, NotificationRecipientType,
@@ -63,7 +64,7 @@ async fn seed_customer(db: &DatabaseConnection) -> String {
 
 fn event(admin: &str, customer: &str) -> NotificationEvent {
     NotificationEvent {
-        event_type: EVENT_TYPE.to_string(),
+        event_type: Event::PaymentConfirmed,
         actor_identifier: None,
         actor_type: NotificationActorType::System,
         entity_type: None,

@@ -1,0 +1,29 @@
+[package]
+name = "asterisk_event_bus"
+version = "0.1.0"
+edition = "2024"
+publish = false
+
+[lib]
+name = "asterisk_event_bus"
+path = "src/lib.rs"
+
+[dependencies]
+bullmq-official = "1.1.0"
+futures = "0.3.34"
+rdkafka = "0.39.0"
+redis = { version = "1.4.1", features = ["tokio-comp", "aio", "connection-manager"] }
+serde = { version = "1.0.219", features = ["derive"] }
+serde_json = "1.0.140"
+thiserror = "2.0.12"
+tokio = { version = "1.44.2", features = ["full", "macros"] }
+tracing = "0.1"
+
+[profile.release]
+opt-level = 3
+codegen-units = 1
+lto = "thin"
+panic = "abort"
+strip = "symbols"
+debug = false
+incremental = false

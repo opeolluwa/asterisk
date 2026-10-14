@@ -1,4 +1,4 @@
-use bullmq::Queue;
+use asterisk_event_bus::QueueEngine;
 
 use crate::config::env::AppConfig;
 use crate::errors::app_error::AppError;
@@ -14,13 +14,14 @@ pub struct Contracts {
 }
 
 impl Contracts {
-    pub fn new(app_config: &AppConfig, email_queue: Queue) -> Result<Self, AppError> {
+    pub fn new(app_config: &AppConfig, queue: QueueEngine) -> Result<Self, AppError> {
         // The dispatch layer is generic over `EmailSender` and has no access to
-        // the config, so the configured sending identity is handed to the
-        // queue-backed sender here, which is the one that runs in the request
-        // path.
+        // the config, so the configured sending identity and destination event
+        // are handed to the queue-backed sender here, which is the one that runs
+        // in the request path.
         let email = QueuedEmailSender::new(
-            email_queue,
+            queue,
+            app_config.events.send_email.clone(),
             SenderIdentity {
                 address: app_config.email_from_address.clone(),
                 name: app_config.email_from_name.clone(),
