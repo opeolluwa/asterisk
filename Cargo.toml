@@ -11,7 +11,7 @@ resolver = "3"
 members = ["event-bus", "generator", "macros", "migration", "payment", "storage"]
 
 [workspace.package]
-version = "0.6.2"
+version = "0.6.3"
 
 [lib]
 name = "lib_asterisk"
