@@ -1,11 +1,11 @@
 [package]
-name = "migration"
-version = "0.1.0"
+name = "asterisk_migration"
+version.workspace = true
 edition = "2024"
 publish = false
 
 [lib]
-name = "migration"
+name = "asterisk_migration"
 path = "src/lib.rs"
 
 [dependencies]
@@ -13,13 +13,3 @@ sea-orm = { version = "2.0.2" }
 sea-orm-migration = { version = "2.0.2", features = ["runtime-tokio-rustls", "sqlx-postgres"] }
 tokio = { version = "1.44.2", features = ["full", "macros"] }
 ulid = "1.2.1"
-
-
-[profile.release]
-opt-level = 3
-codegen-units = 1
-lto = "thin"
-panic = "abort"
-strip = "symbols"
-debug = false
-incremental = false

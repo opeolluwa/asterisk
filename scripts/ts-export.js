@@ -4,7 +4,7 @@ Regenerates the frontend TypeScript bindings for Rust types tagged with
 #[ts(export)].
 
 Entity types (src/models/*.rs) receive that tag automatically through the
-#[macros::ts_rs_export_sea_orm_entity_name] attribute, which derives
+#[asterisk_macros::ts_rs_export_sea_orm_entity_name] attribute, which derives
 ts_rs::TS and renames each exported type to "<Pascal>Interface" (table "admin"
 -> "AdminInterface"). Extractors and other DTOs tag themselves directly.
 

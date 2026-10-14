@@ -1,10 +1,17 @@
 [package]
 name = "asterisk"
-version = "0.6.2"
+version.workspace = true
 authors = ["Adefemi Adeoye"]
 description = "Content management system and administrative platform for web applications"
 edition = "2024"
 default-run = "asterisk"
+
+[workspace]
+resolver = "3"
+members = ["event-bus", "generator", "macros", "migration", "payment", "storage"]
+
+[workspace.package]
+version = "0.6.2"
 
 [lib]
 name = "lib_asterisk"
@@ -22,6 +29,8 @@ path = "src/bin/cli.rs"
 ammonia = "4.1"
 askama = "0.15.6"
 asterisk_event_bus = { path = "event-bus" }
+asterisk_macros = { path = "macros" }
+asterisk_migration = { path = "migration" }
 axum = { version = "0.8.3", features = ["macros"] }
 axum-extra = { version = "0.12.1", features = ["typed-header"] }
 axum-governor = "2.1.2"
@@ -39,8 +48,6 @@ hmac = "0.12"
 jsonwebtoken = { version = "10.1.0", features = ["rust_crypto"] }
 lettre = { version = "0.11.22", default-features = false, features = ["smtp-transport", "pool", "builder", "hostname", "tokio1-rustls", "ring", "rustls", "rustls-native-certs"] }
 log = "0.4.27"
-macros = { version = "0.1.0", path = "macros" }
-migration = { version = "0.1.0", path = "migration" }
 rand = "0.10.3"
 redis = { version = "1.4.1", features = ["tokio-comp", "aio", "connection-manager"] }
 reqwest = { version = "0.12", features = ["json", "multipart"] }

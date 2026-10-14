@@ -65,7 +65,7 @@ migrate-add target:
         --enum-extra-derives 'ts_rs::TS' \
         --enum-extra-attributes 'serde(rename_all = "snake_case")' \
         --model-extra-attributes 'serde(rename_all="camelCase")' \
-        --model-extra-attributes 'macros::ts_rs_export_sea_orm_entity_name' \
+        --model-extra-attributes 'asterisk_macros::ts_rs_export_sea_orm_entity_name' \
         --ignore-tables asterisk_server_migrations \
         -o src/models
 

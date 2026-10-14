@@ -11,7 +11,7 @@ use clap::{Parser, Subcommand};
 #[derive(Parser)]
 #[command(
     name = "asterisk console",
-    version = "0.1.0",
+    version = env!("CARGO_PKG_VERSION"),
     about = "Code generator for asterisk application",
     subcommand_required = true,
     arg_required_else_help = true

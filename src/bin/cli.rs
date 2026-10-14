@@ -27,12 +27,12 @@ enum CliError {
 #[derive(Parser)]
 #[command(
     name = "asterisk CLI",
-    version = "0.1.0",
+    version = env!("CARGO_PKG_VERSION"),
     about = "Command line interface for asterisk application",
     subcommand_required = true,
     arg_required_else_help = true
 )]
-struct asteriskCli {
+struct Asterisk {
     #[command(subcommand)]
     command: Commands,
 }
@@ -59,12 +59,12 @@ async fn main() -> Result<(), CliError> {
     let db = init_db_pool(&app_config).await?;
     let app = Application::new(&db).await?;
 
-    let cli = asteriskCli::parse();
+    let cli = Asterisk::parse();
     parse_commands(cli, &app).await?;
     Ok(())
 }
 
-async fn parse_commands(cli: asteriskCli, app: &Application) -> Result<(), CliError> {
+async fn parse_commands(cli: Asterisk, app: &Application) -> Result<(), CliError> {
     match cli.command {
         Commands::Init => init(app).await?,
         Commands::CreateUser => create_user(app).await?,
